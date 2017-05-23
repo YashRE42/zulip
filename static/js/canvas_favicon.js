@@ -1,5 +1,19 @@
+function set_favicon_image(meta, canvas, context) {
+    let ZULIP_LOGO = "static/favicon.ico";
+    if (page_params.realm_logo_favicon && page_params.realm_icon_source !== 'G') {
+        ZULIP_LOGO = page_params.realm_icon_url;
+    }
+    const img = new Image();
+    img.src = ZULIP_LOGO;
+    img.onload = function () {
+        meta.zulip_image = this;
+        if (canvas && context) {
+            meta.run_queue();
+        }
+    };
+}
+
 const CanvasFavicon = (function () {
-    const ZULIP_LOGO = "static/favicon.ico";
 
     // source: http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
     /*
@@ -68,6 +82,17 @@ const CanvasFavicon = (function () {
             draw: {
                 default: function () {
                     meta.default_icon();
+                },
+
+                pm_notification: function (color) {
+                    const cx = 13;
+                    const cy = 13;
+                    const r = 13;
+
+                    context.beginPath();
+                    context.arc(cx, cy, r, 0, Math.PI * 2);
+                    context.fillStyle = color || "rgb(240, 123, 123)";
+                    context.fill();
                 },
 
                 pm_image: function () {
@@ -172,17 +197,9 @@ const CanvasFavicon = (function () {
             },
         };
 
-        const img = new Image();
-        img.src = ZULIP_LOGO;
-        img.onload = function () {
-            meta.zulip_image = this;
+        set_favicon_image(meta, canvas, context);
 
-            if (canvas && context) {
-                meta.run_queue();
-            }
-        };
-
-        var prototype = {
+        const prototype = {
             init: function (sel) {
                 canvas = document.querySelector(sel);
                 context = canvas.getContext("2d");
@@ -201,6 +218,10 @@ const CanvasFavicon = (function () {
             },
 
             paint: {
+                pm_notification: function () {
+                    meta.proxy(meta.draw.pm_notification);
+                },
+
                 pm_image: function () {
                     meta.proxy(meta.draw.pm_image);
                 },
@@ -220,6 +241,9 @@ const CanvasFavicon = (function () {
 
             default: function (payload) {
                 prototype.paint.default();
+                if (payload.has_pm) {
+                    prototype.paint.pm_notification();
+                }
                 if (payload.unread_count > 0) {
                     prototype.paint.unread_count(payload.unread_count);
                 }
@@ -230,6 +254,7 @@ const CanvasFavicon = (function () {
             pm: function (payload) {
                 prototype.paint.pm_image();
                 prototype.paint.unread_count(payload.unread_count);
+                prototype.paint.pm_notification();
 
                 return this;
             },
@@ -237,6 +262,10 @@ const CanvasFavicon = (function () {
             export_png: function () {
             // exports as a PNG in URL data form.
                 return canvas.toDataURL();
+            },
+
+            change_favicon: function () {
+                set_favicon_image(meta, canvas, context);
             },
         };
 

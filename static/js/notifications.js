@@ -9,11 +9,6 @@ let window_has_focus = document.hasFocus && document.hasFocus();
 
 let supports_sound;
 
-const unread_pms_favicon = '/static/images/favicon/favicon-pms.png';
-let current_favicon;
-let previous_favicon;
-let flashing = false;
-
 let notifications_api;
 
 exports.set_notification_api = function (n) {
@@ -157,12 +152,13 @@ exports.redraw_title = function () {
             if (n > 99) {
                 n = 'infinite';
             }
-
-            current_favicon = previous_favicon = '/static/images/favicon/favicon-' + n + '.png';
-        } else {
-            current_favicon = previous_favicon = '/static/favicon.ico?v=2';
         }
-        favicon.set(current_favicon);
+
+        favicon.canvas.default({
+            unread_count: n,
+            has_pm: unread.get_counts().private_message_count > 0,
+        });
+        favicon.set();
     }
 
     // Notify the current desktop app's UI about the new unread count.
@@ -194,37 +190,48 @@ exports.hide_or_show_history_limit_message = function (msg_list) {
     }
 };
 
-function flash_pms() {
-    // When you have unread PMs, toggle the favicon between the unread count and
-    // a special icon indicating that you have unread PMs.
-    if (unread.get_counts().private_message_count > 0) {
-        if (current_favicon === unread_pms_favicon) {
-            favicon.set(previous_favicon);
-            current_favicon = previous_favicon;
-            previous_favicon = unread_pms_favicon;
+(function flash_pms() {
+    let counter = 0;
+    // we use previous count to ensure that the count has actually edited
+    // this reduces lag by preventing unnecessary calls to favicon.set()
+    let previous_counts = {};
+    setInterval(function () {
+        const unread_count = unread.get_counts();
+        const private_message_count = unread_count.private_message_count;
+        const notifiable_unread_count = unread.calculate_notifiable_count(unread_count);
+        const toggle = (counter + 1) % 2;
+        let update_image = false;
+        if (private_message_count > 0 && toggle) {
+            favicon.canvas.pm({
+                unread_count: private_message_count,
+            });
+            previous_counts = {};
+            update_image = true;
         } else {
-            favicon.set(unread_pms_favicon);
-            previous_favicon = current_favicon;
-            current_favicon = unread_pms_favicon;
-        }
-        // Toggle every 2 seconds.
-        setTimeout(flash_pms, 2000);
-    } else {
-        flashing = false;
-        // You have no more unread PMs, so back to only showing the unread
-        // count.
-        favicon.set(current_favicon);
-    }
-}
+            const default_count = {
+                unread_count: notifiable_unread_count,
+                has_pm: private_message_count > 0,
+            };
 
-exports.update_pm_count = function () {
-    // TODO: Add a `window.electron_bridge.updatePMCount(new_pm_count);` call?
-    if (!flashing) {
-        flashing = true;
-        flash_pms();
+            if (!_.isEqual(previous_counts, default_count)) {
+                previous_counts = Object.assign({}, default_count);
+                favicon.canvas.default(default_count);
+                update_image = true;
+            }
+        }
+        if (update_image) {
+            favicon.set();
+        }
+        counter += 1;
+    }, 2000);
+}());
+
+
+exports.update_pm_count = function (new_pm_count) {
+    if (window.bridge !== undefined && window.bridge.updatePMCount !== undefined) {
+        window.bridge.updatePMCount(new_pm_count);
     }
 };
-
 exports.window_has_focus = function () {
     return window_has_focus;
 };

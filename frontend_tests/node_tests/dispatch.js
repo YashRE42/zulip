@@ -613,6 +613,12 @@ const event_fixtures = {
         setting: true,
     },
 
+    update_display_settings__realm_logo_favicon: {
+        type: 'update_display_settings',
+        setting_name: 'realm_logo_favicon',
+        setting: true,
+    },
+
     update_display_settings__demote_inactive_streams: {
         type: 'update_display_settings',
         setting_name: 'demote_inactive_streams',
@@ -951,6 +957,8 @@ with_overrides(function (override) {
 
     event = event_fixtures.realm__update_dict__icon;
     override('realm_icon.rerender', noop);
+    page_params.realm_logo_favicon = true;
+    override('favicon.change_favicon', noop);
 
     called = false;
     set_global('electron_bridge', {
@@ -1409,6 +1417,12 @@ with_overrides(function (override) {
     page_params.fluid_layout_width = false;
     dispatch(event);
     assert_same(page_params.fluid_layout_width, true);
+
+    override('favicon.change_favicon', noop);
+    event = event_fixtures.update_display_settings__realm_logo_favicon;
+    page_params.realm_logo_favicon = false;
+    dispatch(event);
+    assert_same(page_params.realm_logo_favicon, true);
 
     global.with_stub(function (stub) {
         event = event_fixtures.update_display_settings__demote_inactive_streams;

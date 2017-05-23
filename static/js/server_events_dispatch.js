@@ -169,6 +169,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
             page_params.realm_icon_url = event.data.icon_url;
             page_params.realm_icon_source = event.data.icon_source;
             realm_icon.rerender();
+            if (page_params.realm_logo_favicon) {
+                favicon.change_favicon();
+            }
 
             const electron_bridge = window.electron_bridge;
             if (electron_bridge !== undefined) {
@@ -385,10 +388,11 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
             'high_contrast_mode',
             'night_mode',
             'left_side_userlist',
-            'timezone',
-            'twenty_four_hour_time',
-            'translate_emoticons',
+            'realm_logo_favicon',
             'starred_message_counts',
+            'timezone',
+            'translate_emoticons',
+            'twenty_four_hour_time',
         ];
         if (_.contains(user_display_settings, event.setting_name)) {
             page_params[event.setting_name] = event.setting;
@@ -432,6 +436,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
         }
         if (event.setting_name === 'fluid_layout_width') {
             scroll_bar.set_layout_width();
+        }
+        if (event.setting_name === 'realm_logo_favicon') {
+            favicon.change_favicon();
         }
         if (event.setting_name === 'left_side_userlist') {
             // TODO: Make this change the view immediately rather
