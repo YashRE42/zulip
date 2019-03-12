@@ -1,22 +1,22 @@
 var common = require('../casper_lib/common.js').common;
 
-// function waitWhileDraftsVisible(then) {
-//     casper.waitFor(function () {
-//         return casper.evaluate(function () {
-//             return $("#draft_overlay").length === 0 ||
-//                    $("#draft_overlay").css("opacity") === "0";
-//         });
-//     }, then);
-// }
+function waitWhileDraftsVisible(then) {
+    casper.waitFor(function () {
+        return casper.evaluate(function () {
+            return $("#draft_overlay").length === 0 ||
+                   $("#draft_overlay").css("opacity") === "0";
+        });
+    }, then);
+}
 
-// function waitUntilDraftsVisible(then) {
-//     casper.waitFor(function () {
-//         return casper.evaluate(function () {
-//             return $("#draft_overlay").length === 1 &&
-//                    $("#draft_overlay").css("opacity") === "1";
-//         });
-//     }, then);
-// }
+function waitUntilDraftsVisible(then) {
+    casper.waitFor(function () {
+        return casper.evaluate(function () {
+            return $("#draft_overlay").length === 1 &&
+                   $("#draft_overlay").css("opacity") === "1";
+        });
+    }, then);
+}
 
 common.start_and_log_in();
 
@@ -28,34 +28,34 @@ common.start_and_log_in();
 //     });
 // });
 
-// casper.then(function () {
-//     casper.test.assertUrlMatch(/^http:\/\/[^/]+\/#drafts/,
-//                                'URL suggests we are on drafts page');
-//     waitUntilDraftsVisible(function () {
-//         casper.test.assertExists('#draft_overlay', 'Drafts page is active');
-//         casper.test.assertSelectorHasText('.no-drafts', 'No drafts.');
-//     });
-// });
+casper.then(function () {
+    casper.test.assertUrlMatch(/^http:\/\/[^/]+\/#drafts/,
+                               'URL suggests we are on drafts page');
+    waitUntilDraftsVisible(function () {
+        casper.test.assertExists('#draft_overlay', 'Drafts page is active');
+        casper.test.assertSelectorHasText('.no-drafts', 'No drafts.');
+    });
+});
 
 
-// casper.then(function () {
-//     casper.click('#draft_overlay .exit');
-//     waitWhileDraftsVisible();
-// });
+casper.then(function () {
+    casper.click('#draft_overlay .exit');
+    waitWhileDraftsVisible();
+});
 
-// casper.then(function () {
-//     casper.test.info('Creating Stream Message Draft');
-//     casper.click('body');
-//     casper.page.sendEvent('keypress', "c");
-//     casper.waitUntilVisible('#stream-message', function () {
-//         casper.fill('form#send_message_form', {
-//             stream_message_recipient_stream: 'all',
-//             stream_message_recipient_topic: 'tests',
-//             content: 'Test Stream Message',
-//         }, false);
-//         casper.click("#compose_close");
-//     });
-// });
+casper.then(function () {
+    casper.test.info('Creating Stream Message Draft');
+    casper.click('body');
+    casper.page.sendEvent('keypress', "c");
+    casper.waitUntilVisible('#stream-message', function () {
+        casper.fill('form#send_message_form', {
+            stream_message_recipient_stream: 'all',
+            stream_message_recipient_topic: 'tests',
+            content: 'Test Stream Message',
+        }, false);
+        casper.click("#compose_close");
+    });
+});
 
 // casper.then(function () {
 //     casper.test.info('Creating Private Message Draft');
