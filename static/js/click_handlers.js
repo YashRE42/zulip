@@ -417,6 +417,11 @@ exports.initialize = function () {
         e.preventDefault();
     });
 
+    $(".search_icon").on('click', function () {
+        $(".navbar-search").toggleClass("expanded");
+        $("#tab_list").toggleClass("hidden");
+    });
+
     $(".brand").on('click', function (e) {
         if (overlays.is_active()) {
             overlays.close_active();
