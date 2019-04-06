@@ -116,6 +116,9 @@ exports.update_stream_description = function (sub) {
     var stream_settings = settings_for_sub(sub);
     stream_settings.find('input.description').val(sub.description);
     stream_settings.find('.stream-description-editable').html(sub.rendered_description);
+
+    // Update the navbar
+    tab_bar.update_stream_description(sub.description);
 };
 
 exports.invite_user_to_stream = function (user_email, sub, success, failure) {
