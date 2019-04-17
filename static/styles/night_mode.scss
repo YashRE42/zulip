@@ -181,8 +181,7 @@ on a dark background, and don't change the dark labels dark either. */
     }
 
     .message-header-contents,
-    .message_header_private_message .message-header-contents,
-    #tab_list {
+    .message_header_private_message .message-header-contents {
         background-color: hsla(0, 0%, 0%, 0.2);
     }
 
@@ -337,7 +336,7 @@ on a dark background, and don't change the dark labels dark either. */
     }
 
     #searchbox,
-    #searchbox_legacy,
+    .search_icon.search_closed,
     .drafts-header,
     .nav > li > a:hover,
     .subscriptions-header,
@@ -354,6 +353,10 @@ on a dark background, and don't change the dark labels dark either. */
     .modal-bg .modal-header {
         border-color: hsla(0, 0%, 0%, 0.2);
         background-color: hsla(0, 0%, 0%, 0.2);
+    }
+
+    #searchbox_legacy {
+        border-color: hsla(0, 0%, 0%, 0.2);
     }
 
     .modal-footer {
