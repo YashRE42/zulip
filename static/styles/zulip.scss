@@ -1501,6 +1501,10 @@ div.focused_table {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
         }
 
         li.sub_count,
@@ -1565,6 +1569,9 @@ div.focused_table {
                 &:hover {
                     color: hsl(0, 0%, 0%);
                 }
+            }
+            .settings_link {
+                color: inherit;
             }
         }
     }
