@@ -33,6 +33,9 @@ exports.set = function () {
     }
 };
 
+exports.change_favicon = function () {
+    exports.canvas.change_favicon();
+};
 
 return exports;
 }());
