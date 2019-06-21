@@ -170,6 +170,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
             page_params.realm_icon_url = event.data.icon_url;
             page_params.realm_icon_source = event.data.icon_source;
             realm_icon.rerender();
+            if (page_params.realm_logo_favicon) {
+                favicon.change_favicon();
+            }
 
             var electron_bridge = window.electron_bridge;
             if (electron_bridge !== undefined) {
