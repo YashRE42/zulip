@@ -918,6 +918,13 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     # https://docs.djangoproject.com/en/1.10/ref/models/fields/#django.db.models.Field.null.
     timezone = models.CharField(max_length=40, default=u'')  # type: str
 
+    # user list sidebar
+    ALL_USERS           = 'all'
+    STREAM_MEMBERS      = 'member'
+    USER_LIST_CONTENT_CHOICES   = ((ALL_USERS, "All users"),
+                                   (STREAM_MEMBERS, "Stream or PM recipients"))
+    user_list_content = models.CharField(default=ALL_USERS, choices=USER_LIST_CONTENT_CHOICES, max_length=10)  # type: str
+
     # Emojisets
     GOOGLE_EMOJISET         = 'google'
     GOOGLE_BLOB_EMOJISET    = 'google-blob'
@@ -969,6 +976,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         timezone=str,
         translate_emoticons=bool,
         twenty_four_hour_time=bool,
+        user_list_content=str,
     )
 
     notification_setting_types = dict(
@@ -1051,6 +1059,11 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     @staticmethod
     def emojiset_choices() -> Dict[str, str]:
         return OrderedDict((emojiset[0], emojiset[1]) for emojiset in UserProfile.EMOJISET_CHOICES)
+
+    @staticmethod
+    def user_list_content_choices() -> Dict[str, str]:
+        return (OrderedDict((user_list_content[0], user_list_content[1])
+                for user_list_content in UserProfile.USER_LIST_CONTENT_CHOICES))
 
     @staticmethod
     def emails_from_ids(user_ids: Sequence[int]) -> Dict[int, str]:

@@ -386,6 +386,7 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
             'timezone',
             'twenty_four_hour_time',
             'translate_emoticons',
+            'user_list_content',
             'starred_message_counts',
         ];
         if (_.contains(user_display_settings, event.setting_name)) {
@@ -407,6 +408,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
         }
         if (event.setting_name === 'demote_inactive_streams') {
             stream_list.update_streams_sidebar();
+        }
+        if (event.setting_name === 'user_list_content') {
+            // switch setting here.
         }
         if (event.setting_name === 'dense_mode') {
             $("body").toggleClass("less_dense_mode");

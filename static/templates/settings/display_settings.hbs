@@ -43,6 +43,15 @@
                     {{/each}}
                 </select>
             </div>
+
+            <div class="input-group">
+                <label for="user_list_content" class="dropdown-title">{{t "User list content" }}:</label>
+                <select name="user_list_content" id="user_list_content">
+                    {{#each user_list_content_values}}
+                    <option value='{{ this.value }}'>{{ this.description }}</option>
+                    {{/each}}
+                </select>
+            </div>
         </div>
 
         <div id="user-time-settings">

@@ -1802,6 +1802,7 @@ class EventsRegisterTest(ZulipTestCase):
             default_language = [u'es', u'de', u'en'],
             timezone = [u'US/Mountain', u'US/Samoa', u'Pacific/Galapogos', u''],
             demote_inactive_streams = [2, 3, 1],
+            user_list_content = [u'others', u'member', u'all'],
         )  # type: Dict[str, Any]
 
         property_type = UserProfile.property_types[setting_name]

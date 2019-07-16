@@ -260,6 +260,7 @@ class ChangeSettingsTest(ZulipTestCase):
             emojiset = 'google',
             timezone = 'US/Mountain',
             demote_inactive_streams = 2,
+            user_list_content = 'all',
         )  # type: Dict[str, Any]
 
         email = self.example_email('hamlet')
@@ -289,6 +290,9 @@ class ChangeSettingsTest(ZulipTestCase):
         # displays as 'Invalid language'. Using setting_name.split('_') to format.
         if setting_name == 'demote_inactive_streams':
             self.assert_json_error(result, "Invalid setting value '%s'" % (invalid_value,))
+        elif setting_name == 'user_list_content':
+            self.assert_json_error(result, "Invalid %s '%s'" % ('user_list_content',
+                                                                invalid_value))
         else:
             self.assert_json_error(result, "Invalid %s '%s'" % (setting_name.split('_')[-1],
                                                                 invalid_value))

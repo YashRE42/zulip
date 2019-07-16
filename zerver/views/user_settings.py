@@ -127,6 +127,7 @@ def update_display_settings_backend(
         left_side_userlist: Optional[bool]=REQ(validator=check_bool, default=None),
         emojiset: Optional[str]=REQ(validator=check_string, default=None),
         demote_inactive_streams: Optional[int]=REQ(validator=check_int, default=None),
+        user_list_content: Optional[str]=REQ(validator=check_string, default=None),
         timezone: Optional[str]=REQ(validator=check_string, default=None)) -> HttpResponse:
 
     if (default_language is not None and
@@ -140,6 +141,10 @@ def update_display_settings_backend(
     if (emojiset is not None and
             emojiset not in UserProfile.emojiset_choices()):
         raise JsonableError(_("Invalid emojiset '%s'") % (emojiset,))
+
+    if (user_list_content is not None and
+            user_list_content not in UserProfile.user_list_content_choices()):
+        raise JsonableError(_("Invalid user_list_content '%s'") % (user_list_content,))
 
     if (demote_inactive_streams is not None and
             demote_inactive_streams not in UserProfile.DEMOTE_STREAMS_CHOICES):

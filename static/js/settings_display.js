@@ -37,6 +37,17 @@ exports.demote_inactive_streams_values = {
     },
 };
 
+exports.user_list_content_values = {
+    stream_members: {
+        value: 'member',
+        description: i18n.t("Stream or PM recipients"),
+    },
+    all_users: {
+        value: 'all',
+        description: i18n.t("All users"),
+    },
+};
+
 exports.all_display_settings = {
     settings: {
         user_display_settings: [
@@ -61,6 +72,8 @@ exports.set_up = function () {
     $("#user_timezone").val(page_params.timezone);
 
     $("#demote_inactive_streams").val(page_params.demote_inactive_streams);
+
+    $("#user_list_content").val(page_params.user_list_content);
 
     $(".emojiset_choice[value=" + page_params.emojiset + "]").prop("checked", true);
 
@@ -109,6 +122,11 @@ exports.set_up = function () {
 
     $('#demote_inactive_streams').change(function () {
         var data = {demote_inactive_streams: this.value};
+        change_display_setting(data, '#display-settings-status');
+    });
+
+    $('#user_list_content').change(function () {
+        var data = {user_list_content: JSON.stringify(this.value)};
         change_display_setting(data, '#display-settings-status');
     });
 

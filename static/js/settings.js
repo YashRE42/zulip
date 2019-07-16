@@ -135,6 +135,7 @@ exports.build_page = function () {
         can_create_new_bots: settings_bots.can_create_new_bots(),
         settings_label: settings.settings_label,
         demote_inactive_streams_values: settings_display.demote_inactive_streams_values,
+        user_list_content_values: settings_display.user_list_content_values,
         notification_settings: settings_notifications.all_notifications.settings,
         desktop_icon_count_display_values: settings_notifications.desktop_icon_count_display_values,
         push_notification_tooltip:
