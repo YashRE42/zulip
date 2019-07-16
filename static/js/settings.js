@@ -99,6 +99,7 @@ exports.build_page = function () {
         demote_inactive_streams_values: settings_config.demote_inactive_streams_values,
         twenty_four_hour_time_values: settings_config.twenty_four_hour_time_values,
         general_settings: settings_notifications.all_notifications.general_settings,
+        buddy_list_mode_values: settings_display.buddy_list_mode_values,
         notification_settings: settings_notifications.all_notifications.settings,
         desktop_icon_count_display_values: settings_notifications.desktop_icon_count_display_values,
         show_push_notifications_tooltip:

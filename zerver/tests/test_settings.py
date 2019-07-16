@@ -324,6 +324,7 @@ class ChangeSettingsTest(ZulipTestCase):
             emojiset = 'google',
             timezone = 'US/Mountain',
             demote_inactive_streams = 2,
+            buddy_list_mode = 2,
         )  # type: Dict[str, Any]
 
         self.login('hamlet')
@@ -334,6 +335,8 @@ class ChangeSettingsTest(ZulipTestCase):
 
         if setting_name == 'demote_inactive_streams':
             invalid_value = 4  # type: Union[int, str]
+        elif setting_name == 'buddy_list_mode':
+            invalid_value = 3
         else:
             invalid_value = 'invalid_' + setting_name
         data = {setting_name: ujson.dumps(test_value)}
@@ -350,7 +353,7 @@ class ChangeSettingsTest(ZulipTestCase):
         result = self.client_patch("/json/settings/display", data)
         # the json error for multiple word setting names (ex: default_language)
         # displays as 'Invalid language'. Using setting_name.split('_') to format.
-        if setting_name == 'demote_inactive_streams':
+        if setting_name in ['buddy_list_mode', 'demote_inactive_streams']:
             self.assert_json_error(result, "Invalid setting value '%s'" % (invalid_value,))
         else:
             self.assert_json_error(result, "Invalid %s '%s'" % (setting_name.split('_')[-1],

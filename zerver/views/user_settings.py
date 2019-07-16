@@ -156,6 +156,7 @@ def update_display_settings_backend(
         left_side_userlist: Optional[bool]=REQ(validator=check_bool, default=None),
         emojiset: Optional[str]=REQ(validator=check_string, default=None),
         demote_inactive_streams: Optional[int]=REQ(validator=check_int, default=None),
+        buddy_list_mode: Optional[int]=REQ(validator=check_int, default=None),
         timezone: Optional[str]=REQ(validator=check_string, default=None)) -> HttpResponse:
 
     if (default_language is not None and
@@ -173,6 +174,10 @@ def update_display_settings_backend(
     if (demote_inactive_streams is not None and
             demote_inactive_streams not in UserProfile.DEMOTE_STREAMS_CHOICES):
         raise JsonableError(_("Invalid setting value '%s'") % (demote_inactive_streams,))
+
+    if (buddy_list_mode is not None and
+            buddy_list_mode not in UserProfile.BUDDY_LIST_MODE_CHOICES):
+        raise JsonableError(_("Invalid setting value '%s'") % (buddy_list_mode,))
 
     request_settings = {k: v for k, v in list(locals().items()) if k in user_profile.property_types}
     result = {}  # type: Dict[str, Any]

@@ -21,6 +21,49 @@ function change_display_setting(data, status_element, success_msg, sticky) {
     settings_ui.do_settings_change(channel.patch, '/json/settings/display', data, status_element, opts);
 }
 
+exports.demote_inactive_streams_values = {
+    automatic: {
+        code: 1,
+        description: i18n.t("Automatic"),
+    },
+    always: {
+        code: 2,
+        description: i18n.t("Always"),
+    },
+    never: {
+        code: 3,
+        description: i18n.t("Never"),
+    },
+};
+
+exports.buddy_list_mode_values = {
+    all_users: {
+        value: 1,
+        description: i18n.t("All users"),
+    },
+    stream_or_pm_members: {
+        value: 2,
+        description: i18n.t("Stream or PM recipients"),
+    },
+};
+
+exports.all_display_settings = {
+    settings: {
+        user_display_settings: [
+            "dense_mode",
+            "night_mode",
+            "high_contrast_mode",
+            "left_side_userlist",
+            "starred_message_counts",
+            "fluid_layout_width",
+        ],
+    },
+    render_only: {
+        high_contrast_mode: page_params.development_environment,
+        dense_mode: page_params.development_environment,
+    },
+};
+
 exports.set_up = function () {
     meta.loaded = true;
     $("#display-settings-status").hide();
@@ -30,6 +73,7 @@ exports.set_up = function () {
     $("#demote_inactive_streams").val(page_params.demote_inactive_streams);
 
     $("#twenty_four_hour_time").val(JSON.stringify(page_params.twenty_four_hour_time));
+    $("#buddy_list_mode").val(page_params.buddy_list_mode);
 
     $(".emojiset_choice[value=" + page_params.emojiset + "]").prop("checked", true);
 
@@ -79,6 +123,11 @@ exports.set_up = function () {
 
     $('#demote_inactive_streams').change(function () {
         const data = {demote_inactive_streams: this.value};
+        change_display_setting(data, '#display-settings-status');
+    });
+
+    $('#buddy_list_mode').change(function () {
+        var data = {buddy_list_mode: this.value};
         change_display_setting(data, '#display-settings-status');
     });
 
