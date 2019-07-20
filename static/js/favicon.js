@@ -41,10 +41,9 @@ exports.change_favicon = function () {
 };
 
 exports.update_favicon = function () {
-    var unread_count = unread.get_counts();
+    var notifiable_unread_count = unread.get_notifiable_counts();
     var default_count = {
-        unread_count: unread_count.home_unread_messages,
-        has_pm: unread_count.private_message_count > 0,
+        unread_count: notifiable_unread_count,
     };
     favicon.canvas.default(default_count);
     exports.set();
