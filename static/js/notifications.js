@@ -160,6 +160,7 @@ exports.redraw_title = function () {
 
         favicon.canvas.default({
             unread_count: n,
+            has_pm: unread.get_counts().private_message_count > 0,
         });
         favicon.set();
     }
@@ -213,6 +214,7 @@ exports.hide_or_show_history_limit_message = function (msg_list) {
         } else {
             var default_count = {
                 unread_count: notifiable_unread_count,
+                has_pm: private_message_count > 0,
             };
 
             if (!_.isEqual(previous_counts, default_count)) {
