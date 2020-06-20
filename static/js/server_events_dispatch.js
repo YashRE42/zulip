@@ -98,10 +98,16 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
         }
 
         case "reaction":
-            if (event.op === "add") {
-                reactions.add_reaction(event);
-            } else if (event.op === "remove") {
-                reactions.remove_reaction(event);
+            switch (event.op) {
+                case "add":
+                    reactions.add_reaction(event);
+                    break;
+                case "remove":
+                    reactions.remove_reaction(event);
+                    break;
+                default:
+                    blueslip.error("Reaction event called without any matching event op");
+                    break;
             }
             break;
 

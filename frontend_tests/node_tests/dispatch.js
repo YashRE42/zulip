@@ -889,4 +889,6 @@ run_test("realm_export", (override) => {
 run_test("server_event_dispatch_op_errors", () => {
     blueslip.expect("error", "Subscription event called without any matching event op");
     server_events_dispatch.dispatch_normal_event({type: "subscription", op: "other"});
+    blueslip.expect("error", "Reaction event called without any matching event op");
+    server_events_dispatch.dispatch_normal_event({type: "reaction", op: "other"});
 });
