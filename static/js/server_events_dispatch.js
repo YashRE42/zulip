@@ -334,64 +334,71 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
         }
 
         case "subscription":
-            if (event.op === "add") {
-                for (const rec of event.subscriptions) {
-                    const sub = stream_data.get_sub_by_id(rec.stream_id);
-                    if (sub) {
-                        stream_data.update_stream_email_address(sub, rec.email_address);
-                        stream_events.mark_subscribed(sub, rec.subscribers, rec.color);
-                    } else {
-                        blueslip.error("Subscribing to unknown stream with ID " + rec.stream_id);
+            switch (event.op) {
+                case "add":
+                    for (const rec of event.subscriptions) {
+                        const sub = stream_data.get_sub_by_id(rec.stream_id);
+                        if (sub) {
+                            stream_data.update_stream_email_address(sub, rec.email_address);
+                            stream_events.mark_subscribed(sub, rec.subscribers, rec.color);
+                        } else {
+                            blueslip.error(
+                                "Subscribing to unknown stream with ID " + rec.stream_id,
+                            );
+                        }
                     }
-                }
-            } else if (event.op === "peer_add") {
-                event.stream_ids.forEach((stream_id) => {
-                    const sub = stream_data.get_sub_by_id(stream_id);
+                    break;
+                case "peer_add":
+                    event.stream_ids.forEach((stream_id) => {
+                        const sub = stream_data.get_sub_by_id(stream_id);
 
-                    if (!sub) {
-                        blueslip.warn("Cannot find stream for peer_add: " + stream_id);
-                        return;
-                    }
-
-                    event.user_ids.forEach((user_id) => {
-                        if (!peer_data.add_subscriber(stream_id, user_id)) {
-                            blueslip.warn("Cannot process peer_add event");
+                        if (!sub) {
+                            blueslip.warn("Cannot find stream for peer_add: " + stream_id);
                             return;
                         }
+
+                        event.user_ids.forEach((user_id) => {
+                            if (!peer_data.add_subscriber(stream_id, user_id)) {
+                                blueslip.warn("Cannot process peer_add event");
+                                return;
+                            }
+                        });
+
+                        subs.update_subscribers_ui(sub);
                     });
+                    compose_fade.update_faded_users();
+                    break;
+                case "peer_remove":
+                    event.stream_ids.forEach((stream_id) => {
+                        const sub = stream_data.get_sub_by_id(stream_id);
 
-                    subs.update_subscribers_ui(sub);
-                });
-                compose_fade.update_faded_users();
-            } else if (event.op === "peer_remove") {
-                event.stream_ids.forEach((stream_id) => {
-                    const sub = stream_data.get_sub_by_id(stream_id);
-
-                    if (!sub) {
-                        blueslip.warn("Cannot find stream for peer_remove: " + stream_id);
-                        return;
-                    }
-
-                    event.user_ids.forEach((user_id) => {
-                        if (!peer_data.remove_subscriber(sub.stream_id, user_id)) {
-                            blueslip.warn("Cannot process peer_remove event.");
+                        if (!sub) {
+                            blueslip.warn("Cannot find stream for peer_remove: " + stream_id);
                             return;
                         }
-                    });
 
-                    subs.update_subscribers_ui(sub);
-                });
-                compose_fade.update_faded_users();
-            } else if (event.op === "remove") {
-                for (const rec of event.subscriptions) {
-                    const sub = stream_data.get_sub_by_id(rec.stream_id);
-                    stream_events.mark_unsubscribed(sub);
-                }
-            } else if (event.op === "update") {
-                stream_events.update_property(event.stream_id, event.property, event.value);
+                        event.user_ids.forEach((user_id) => {
+                            if (!peer_data.remove_subscriber(sub.stream_id, user_id)) {
+                                blueslip.warn("Cannot process peer_remove event.");
+                                return;
+                            }
+                        });
+
+                        subs.update_subscribers_ui(sub);
+                    });
+                    compose_fade.update_faded_users();
+                    break;
+                case "remove":
+                    for (const rec of event.subscriptions) {
+                        const sub = stream_data.get_sub_by_id(rec.stream_id);
+                        stream_events.mark_unsubscribed(sub);
+                    }
+                    break;
+                case "update":
+                    stream_events.update_property(event.stream_id, event.property, event.value);
+                    break;
             }
             break;
-
         case "typing":
             if (event.sender.user_id === page_params.user_id) {
                 // typing notifications are sent to the user who is typing
