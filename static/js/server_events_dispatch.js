@@ -397,6 +397,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                 case "update":
                     stream_events.update_property(event.stream_id, event.property, event.value);
                     break;
+                default:
+                    blueslip.error("Subscription event called without any matching event op");
+                    break;
             }
             break;
         case "typing":
