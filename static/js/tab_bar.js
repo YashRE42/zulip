@@ -166,9 +166,6 @@ exports.render_title_area = function () {
 // have been updated is the same as the stream which is currently
 // narrowed (filter._sub) and rerenders if necessary
 exports.maybe_rerender_title_area_for_stream = function (old_sub) {
-    // TODO: Implement rerendering for subscriber count changes.
-    // We simply need to call this function in the appropriate places.
-
     // This should never happen, but it's better to validate the assumption
     // that old_sub exists and throw an error and then exit if not
     if (typeof old_sub === "undefined") {
