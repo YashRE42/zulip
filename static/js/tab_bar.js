@@ -168,6 +168,14 @@ exports.render_title_area = function () {
 exports.maybe_rerender_title_area_for_stream = function (old_sub) {
     // TODO: Implement rerendering for subscriber count changes.
     // We simply need to call this function in the appropriate places.
+
+    // This should never happen, but it's better to validate the assumption
+    // that old_sub exists and throw an error and then exit if not
+    if (typeof old_sub === "undefined") {
+        blueslip.error('Undefined sub passed to function tab_bar.maybe_rerender_title_area_for_stream');
+        return;
+    }
+
     const filter = narrow_state.filter();
     if (filter && filter._sub && filter._sub.stream_id === old_sub.stream_id) {
         tab_bar.render_title_area();
