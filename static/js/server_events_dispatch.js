@@ -303,6 +303,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                         }
                         settings_org.populate_realm_domains(page_params.realm_domains);
                         break;
+                    default:
+                        blueslip.error("realm_domains event called without any matching event op");
+                        break;
                 }
             }
             break;

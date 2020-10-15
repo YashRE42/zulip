@@ -904,4 +904,6 @@ run_test("server_event_dispatch_op_errors", () => {
     });
     blueslip.expect("error", "realm bot event called without any matching event op");
     server_events_dispatch.dispatch_normal_event({type: "realm_bot", op: "other"});
+    blueslip.expect("error", "realm_domains event called without any matching event op");
+    server_events_dispatch.dispatch_normal_event({type: "realm_domains", op: "other"});
 });
