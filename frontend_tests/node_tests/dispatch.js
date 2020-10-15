@@ -891,4 +891,13 @@ run_test("server_event_dispatch_op_errors", () => {
     server_events_dispatch.dispatch_normal_event({type: "subscription", op: "other"});
     blueslip.expect("error", "Reaction event called without any matching event op");
     server_events_dispatch.dispatch_normal_event({type: "reaction", op: "other"});
+    blueslip.expect(
+        "error",
+        "Realm event, update dict op called without any matching event property",
+    );
+    server_events_dispatch.dispatch_normal_event({
+        type: "realm",
+        op: "update_dict",
+        property: "other",
+    });
 });

@@ -209,6 +209,11 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                         page_params.realm_night_logo_source = event.data.night_logo_source;
                         realm_logo.rerender();
                         break;
+                    default:
+                        blueslip.error(
+                            "Realm event, update dict op called without any matching event property",
+                        );
+                        break;
                 }
             } else if (event.op === "deactivated") {
                 window.location.href = "/accounts/deactivated/";
