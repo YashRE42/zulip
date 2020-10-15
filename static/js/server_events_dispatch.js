@@ -254,6 +254,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                     bot_data.update(event.bot.user_id, event.bot);
                     settings_users.update_bot_data(event.bot.user_id);
                     break;
+                default:
+                    blueslip.error("realm bot event called without any matching event op");
+                    break;
             }
             break;
 
