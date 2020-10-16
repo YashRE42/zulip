@@ -910,4 +910,10 @@ run_test("server_event_dispatch_op_errors", () => {
     server_events_dispatch.dispatch_normal_event({type: "realm_user", op: "other"});
     blueslip.expect("error", "stream event called without any matching event op");
     server_events_dispatch.dispatch_normal_event({type: "stream", op: "other"});
+    blueslip.expect("error", "typing event called without any matching event op");
+    server_events_dispatch.dispatch_normal_event({
+        type: "typing",
+        sender: {user_id: 5},
+        op: "other",
+    });
 });

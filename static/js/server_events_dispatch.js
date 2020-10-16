@@ -479,6 +479,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                 case "stop":
                     typing_events.hide_notification(event);
                     break;
+                default:
+                    blueslip.error("typing event called without any matching event op");
+                    break;
             }
             break;
 
