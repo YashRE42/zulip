@@ -376,6 +376,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                         }
                     }
                     break;
+                default:
+                    blueslip.error("stream event called without any matching event op");
+                    break;
             }
             break;
 
