@@ -618,6 +618,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                 case "update":
                     user_groups.update(event);
                     break;
+                default:
+                    blueslip.error("user_group event called without any matching event op");
+                    break;
             }
             settings_user_groups.reload();
             break;

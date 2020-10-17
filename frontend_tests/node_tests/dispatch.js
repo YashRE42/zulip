@@ -888,7 +888,7 @@ run_test("realm_export", (override) => {
     });
 });
 
-run_test("server_event_dispatch_op_errors", () => {
+run_test("server_event_dispatch_op_errors", (override) => {
     blueslip.expect("error", "Subscription event called without any matching event op");
     server_events_dispatch.dispatch_normal_event({type: "subscription", op: "other"});
     blueslip.expect("error", "Reaction event called without any matching event op");
@@ -916,4 +916,7 @@ run_test("server_event_dispatch_op_errors", () => {
         sender: {user_id: 5},
         op: "other",
     });
+    override("settings_user_groups.reload", noop);
+    blueslip.expect("error", "user_group event called without any matching event op");
+    server_events_dispatch.dispatch_normal_event({type: "user_group", op: "other"});
 });
