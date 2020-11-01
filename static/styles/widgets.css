@@ -96,6 +96,15 @@ img.task-completed {
     width: 15px;
 }
 
+.todo-widget {
+    #toggle-completed {
+        margin-top: 0;
+    }
+    label {
+        display: inline;
+    }
+}
+
 input,
 button {
     &.add-task,

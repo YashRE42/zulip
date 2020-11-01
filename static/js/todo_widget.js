@@ -154,6 +154,21 @@ exports.activate = function (opts) {
             const data = task_data.handle.new_task.outbound(task, desc);
             callback(data);
         });
+
+        elem.find("input#toggle-completed").on("click", (e) => {
+            e.stopPropagation();
+
+            // We prefer this to using .toggle() as it doesn't
+            // assume that the elements are always in sync and
+            // as such is less brittle
+            if (e.target.checked) {
+                elem.find("button.task-completed.task").hide();
+                elem.find("button.task-completed.task+.task").hide();
+            } else {
+                elem.find("button.task-completed.task").show();
+                elem.find("button.task-completed.task+.task").show();
+            }
+        });
     }
 
     function render_results() {
