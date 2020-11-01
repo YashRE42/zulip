@@ -117,7 +117,11 @@ class TopicListWidget {
     }
 
     build_list(spinner) {
-        const list_info = topic_list_data.get_list_info(this.my_stream_id, zoomed);
+        const list_info = topic_list_data.get_list_info(
+            this.my_stream_id,
+            zoomed,
+            get_search_term(),
+        );
 
         const num_possible_topics = list_info.num_possible_topics;
         const more_topics_unreads = list_info.more_topics_unreads;
@@ -163,6 +167,16 @@ class TopicListWidget {
         const replace_content = (html) => {
             this.remove();
             this.parent_elem.append(html);
+
+            const $search_input = $(".topic-list-filter").expectOne();
+            $search_input.off().on("input", () => {
+                this.build(spinner);
+            });
+            const clear_button = $("#clear_search_topic_button").expectOne();
+            clear_button.off().on("click", () => {
+                $(".topic-list-filter").expectOne().val("");
+                this.build(spinner);
+            });
         };
 
         const find = () => this.parent_elem.find(".topic-list");
@@ -209,6 +223,15 @@ exports.rebuild = function (stream_li, stream_id) {
 
     active_widgets.set(stream_id, widget);
 };
+
+function get_search_term() {
+    if (!zoomed) {
+        return "";
+    }
+    const search_box = $(".topic-list-filter");
+    const search_term = search_box.expectOne().val().trim().toLowerCase();
+    return search_term;
+}
 
 // For zooming, we only do topic-list stuff here...let stream_list
 // handle hiding/showing the non-narrowed streams
@@ -275,6 +298,11 @@ exports.initialize = function () {
         );
 
         e.preventDefault();
+    });
+    const search_icon = $("#topic_filter_icon").expectOne();
+    search_icon.on("click", () => {
+        $("#clear_search_topic_button").click();
+        $(".topic_search_section").expectOne().toggleClass("notdisplayed");
     });
 };
 

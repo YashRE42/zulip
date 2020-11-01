@@ -3,7 +3,14 @@
 const max_topics = 5;
 const max_topics_with_unread = 8;
 
-exports.get_list_info = function (stream_id, zoomed) {
+exports.matches_filter = function (topic_name, filter) {
+    // todo:
+    // Split multiword filter queries at space
+    // and check if any split is included.
+    return topic_name.includes(filter.toLowerCase());
+};
+
+exports.get_list_info = function (stream_id, zoomed, filter) {
     let topics_selected = 0;
     let more_topics_unreads = 0;
 
@@ -79,16 +86,18 @@ exports.get_list_info = function (stream_id, zoomed) {
             // same code we do when zoomed.
         }
 
-        const topic_info = {
-            topic_name,
-            unread: num_unread,
-            is_zero: num_unread === 0,
-            is_muted: is_topic_muted,
-            is_active_topic,
-            url: hash_util.by_stream_topic_uri(stream_id, topic_name),
-        };
+        if (!filter || exports.matches_filter(topic_name, filter)) {
+            const topic_info = {
+                topic_name,
+                unread: num_unread,
+                is_zero: num_unread === 0,
+                is_muted: is_topic_muted,
+                is_active_topic,
+                url: hash_util.by_stream_topic_uri(stream_id, topic_name),
+            };
 
-        items.push(topic_info);
+            items.push(topic_info);
+        }
     }
 
     return {
