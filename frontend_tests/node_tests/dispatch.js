@@ -747,10 +747,13 @@ run_test("update_display_settings", (override) => {
         assert_same(page_params.emojiset, "google");
     });
 
-    global.with_stub((stub) => {
+    with_stub((stub) => {
         event = event_fixtures.update_display_settings__emojiset;
         override("settings_display.report_emojiset_change", noop);
-        override("activity.build_user_sidebar", stub.f);
+        override("activity.build_user_sidebar", stub.f); // is called exactly once
+        page_params.realm_buddy_list_status_emoji = false;
+        dispatch(event);
+        page_params.realm_buddy_list_status_emoji = true;
         dispatch(event);
     });
 

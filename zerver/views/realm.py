@@ -42,6 +42,7 @@ def update_realm(
         request: HttpRequest, user_profile: UserProfile,
         name: Optional[str]=REQ(validator=check_string, default=None),
         description: Optional[str]=REQ(validator=check_string, default=None),
+        buddy_list_status_emoji: Optional[bool]=REQ(validator=check_bool, default=None),
         emails_restricted_to_domains: Optional[bool]=REQ(validator=check_bool, default=None),
         disallow_disposable_email_addresses: Optional[bool]=REQ(validator=check_bool, default=None),
         invite_required: Optional[bool]=REQ(validator=check_bool, default=None),

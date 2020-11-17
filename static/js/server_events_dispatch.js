@@ -114,6 +114,7 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                 user_group_edit_policy: noop,
                 avatar_changes_disabled: settings_account.update_avatar_change_display,
                 bot_creation_policy: settings_bots.update_bot_permissions_ui,
+                buddy_list_status_emoji: activity.build_user_sidebar,
                 create_stream_policy: noop,
                 invite_to_stream_policy: noop,
                 default_code_block_language: noop,
@@ -486,8 +487,10 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
                 if (current_msg_list === message_list.narrowed) {
                     message_list.narrowed.rerender();
                 }
-                // Rerender buddy list status emoji
-                activity.build_user_sidebar();
+
+                if (page_params.realm_buddy_list_status_emoji) {
+                    activity.build_user_sidebar();
+                }
             }
             settings_display.update_page();
             break;

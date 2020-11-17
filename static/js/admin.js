@@ -10,6 +10,7 @@ const admin_settings_label = {
     // Organization settings
     realm_allow_community_topic_editing: i18n.t("Users can edit the topic of any message"),
     realm_allow_edit_history: i18n.t("Enable message edit history"),
+    realm_buddy_list_status_emoji: i18n.t("Display emoji in the user list for common statuses"),
     realm_mandatory_topics: i18n.t("Require topics in stream messages"),
     realm_notifications_stream: i18n.t("New stream notifications:"),
     realm_signup_notifications_stream: i18n.t("New user notifications:"),

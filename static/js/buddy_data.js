@@ -182,7 +182,7 @@ exports.info_for = function (user_id) {
     const my_user_status = exports.get_my_user_status(user_id);
     const emojiset = page_params.emojiset;
     let status_emoji = "";
-    if (emojiset !== "text") {
+    if (page_params.realm_buddy_list_status_emoji && emojiset !== "text") {
         status_emoji = user_status.get_status_emoji(user_id);
     }
     const user_circle_status = exports.status_description(user_id);

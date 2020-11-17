@@ -226,6 +226,7 @@ class Realm(models.Model):
     name_changes_disabled: bool = models.BooleanField(default=False)
     email_changes_disabled: bool = models.BooleanField(default=False)
     avatar_changes_disabled: bool = models.BooleanField(default=False)
+    buddy_list_status_emoji: bool = models.BooleanField(default=False)
 
     POLICY_MEMBERS_ONLY = 1
     POLICY_ADMINS_ONLY = 2
@@ -419,6 +420,7 @@ class Realm(models.Model):
         allow_edit_history=bool,
         allow_message_deleting=bool,
         bot_creation_policy=int,
+        buddy_list_status_emoji=bool,
         create_stream_policy=int,
         invite_to_stream_policy=int,
         default_language=str,
