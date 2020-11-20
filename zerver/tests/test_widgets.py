@@ -101,7 +101,7 @@ class WidgetContentTestCase(ZulipTestCase):
             self.assertEqual(get_widget_data(content=message), (None, None))
 
         # Add a positive check for context
-        self.assertEqual(get_widget_data(content='/todo'), ('todo', None))
+        self.assertEqual(get_widget_data(content='/todo'), ('todo', {'todos': []}))
 
     def test_explicit_widget_content(self) -> None:
         # Users can send widget_content directly on messages
@@ -152,7 +152,7 @@ class WidgetContentTestCase(ZulipTestCase):
 
         sender = self.example_user('cordelia')
         stream_name = 'Verona'
-        content = '/todo'
+        content = '/todo \nget sunlight - green grass\nx trim lawn - red lawnmower  \n\n   get milk\n - get eggs'
 
         payload = dict(
             type="stream",
@@ -169,7 +169,28 @@ class WidgetContentTestCase(ZulipTestCase):
 
         expected_submessage_content = dict(
             widget_type="todo",
-            extra_data=None,
+            extra_data={'todos': [
+                        {
+                            'completed': False,
+                            'description': 'green grass',
+                            'task': 'get sunlight'
+                        },
+                        {
+                            'completed': True,
+                            'description': 'red lawnmower',
+                            'task': 'trim lawn'
+                        },
+                        {
+                            'completed': False,
+                            'description': '',
+                            'task': 'get milk'
+                        },
+                        {
+                            'completed': False,
+                            'description': '',
+                            'task': 'get eggs'
+                        },
+                        ]},
         )
 
         submessage = SubMessage.objects.get(message_id=message.id)
