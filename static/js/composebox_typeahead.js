@@ -391,6 +391,10 @@ exports.slash_commands = [
         name: "poll",
     },
     {
+        text: i18n.t("/todo x make a list - with one item (Creates a todo)"),
+        name: "todo",
+    },
+    {
         text: i18n.t("/settings (Load settings menu)"),
         name: "settings",
     },
