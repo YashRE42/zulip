@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from zerver.lib.message import SendMessageRequest
 from zerver.models import SubMessage
@@ -20,6 +20,14 @@ def get_widget_data(content: str) -> Tuple[Optional[str], Optional[str]]:
 
     return None, None
 
+def get_widget_lines_of_text(lines: List[str], callback: Callable[[str], None]) -> None:
+    for line in lines:
+        # If someone is using the list syntax, we remove it
+        # before adding an option.
+        stripped_line = re.sub(r'(\s*[-*]?\s*)', '', line.strip(), 1)
+        if len(stripped_line) > 0:
+            callback(stripped_line)
+
 def get_extra_data_from_widget_type(content: str,
                                     widget_type: Optional[str]) -> Any:
     if widget_type == 'poll':
@@ -30,12 +38,11 @@ def get_extra_data_from_widget_type(content: str,
         options = []
         if lines and lines[0]:
             question = lines.pop(0).strip()
-        for line in lines:
-            # If someone is using the list syntax, we remove it
-            # before adding an option.
-            option = re.sub(r'(\s*[-*]?\s*)', '', line.strip(), 1)
-            if len(option) > 0:
-                options.append(option)
+
+        def append_option(option: str) -> None:
+            options.append(option)
+
+        get_widget_lines_of_text(lines, append_option)
         poll_extra_data = {
             'question': question,
             'options': options,
@@ -44,27 +51,26 @@ def get_extra_data_from_widget_type(content: str,
     if widget_type == 'todo':
         todos: List[Dict[str, object]] = []
         lines = content.splitlines()
-        for line in lines:
-            if len(line) > 0:
-                # If someone is using the list syntax, we remove it
-                # before adding an option.
-                stripped_line = re.sub(r'(\s*[-*]?\s*)', '', line.strip(), 1)
-                completed = False
-                if stripped_line.startswith("x "):
-                    stripped_line = stripped_line[2:]  # strip the "x "
-                    completed = True
-                todo_split = stripped_line.split(" - ", 1)
-                task = todo_split[0].strip()
-                if task:
-                    description = ""
-                    if len(todo_split) > 1:
-                        description = todo_split[1].strip()
-                    todo = {
-                        'task': task,
-                        'description': description,
-                        'completed': completed,
-                    }
-                    todos.append(todo.copy())
+
+        def append_todo(todo_string: str) -> None:
+            completed = False
+            if todo_string.startswith("x "):
+                todo_string = todo_string[2:]  # strip the "x "
+                completed = True
+            todo_string_split = todo_string.split(" - ", 1)
+            task = todo_string_split[0].strip()
+            if task:
+                description = ""
+                if len(todo_string_split) > 1:
+                    description = todo_string_split[1].strip()
+                todo = {
+                    'task': task,
+                    'description': description,
+                    'completed': completed,
+                }
+                todos.append(todo.copy())
+
+        get_widget_lines_of_text(lines, append_todo)
         todo_extra_data = {
             'todos': todos,
         }
