@@ -5,15 +5,18 @@
 <a class="sub_count no-style" data-toggle="tooltip" title="{{sub_count_tooltip_text}}" href="{{stream_settings_link}}">
     <i class="fa fa-user-o"></i>{{formatted_sub_count}}
 </a>
-<span class="narrow_description rendered_markdown" data-toggle="tooltip">
+<span class="narrow_description rendered_markdown full-width" data-toggle="tooltip">
     {{#if rendered_narrow_description}}
     {{rendered_markdown rendered_narrow_description}}
     {{else}}
     {{t "(no description)"}}
     {{/if}}
 </span>
+<span class="extended_description rendered_markdown" data-toggle="tooltip">
+    <i class="fa fa-angle-down"></i>
+</span>
 {{else}}
-<span>
+<span class="full-width">
     {{> navbar_icon_and_title }}
 </span>
 {{/if}}

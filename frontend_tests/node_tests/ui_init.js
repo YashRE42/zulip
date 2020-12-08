@@ -189,6 +189,7 @@ count_stub.set_find_results(".value", value_stub);
 $(".top_left_starred_messages").set_find_results(".count", count_stub);
 
 $("#message_view_header .stream").length = 0;
+$(".narrow_description").innerWidth = () => {};
 
 // set find results doesn't work here since we call .empty() in the code.
 $message_view_header.find = () => false;
