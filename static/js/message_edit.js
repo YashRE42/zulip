@@ -60,11 +60,19 @@ function is_topic_editable(message, edit_limit_seconds_buffer) {
         0
     );
 }
-
+function get_widget_editability(message, edit_limit_seconds_buffer) {
+    if (message.type === "stream" && is_topic_editable(message, edit_limit_seconds_buffer)) {
+        return editability_types.TOPIC_ONLY;
+    }
+    return editability_types.NO;
+}
 function get_editability(message, edit_limit_seconds_buffer) {
     edit_limit_seconds_buffer = edit_limit_seconds_buffer || 0;
     if (!message) {
         return editability_types.NO;
+    }
+    if (message.submessages.length > 0) {
+        return get_widget_editability(message, edit_limit_seconds_buffer);
     }
     if (!is_topic_editable(message, edit_limit_seconds_buffer)) {
         return editability_types.NO;

@@ -24,6 +24,7 @@ run_test("get_editability", () => {
     assert.equal(
         get_editability({
             sent_by_me: false,
+            submessages: [],
         }),
         editability_types.NO,
     );
@@ -33,6 +34,7 @@ run_test("get_editability", () => {
     assert.equal(
         get_editability({
             sent_by_me: true,
+            submessages: [],
             failed_request: true,
         }),
         editability_types.NO,
@@ -43,6 +45,7 @@ run_test("get_editability", () => {
     assert.equal(
         get_editability({
             sent_by_me: true,
+            submessages: [],
             local_id: "25",
         }),
         editability_types.NO,
@@ -52,6 +55,7 @@ run_test("get_editability", () => {
     // user, and that were successfully sent (i.e. no failed_request or local_id)
     let message = {
         sent_by_me: true,
+        submessages: [],
     };
 
     set_global("page_params", {
@@ -86,6 +90,7 @@ run_test("get_editability", () => {
 
     message = {
         sent_by_me: false,
+        submessages: [],
         type: "stream",
     };
     set_global("page_params", {
