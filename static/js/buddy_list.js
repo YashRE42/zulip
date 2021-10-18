@@ -6,8 +6,10 @@ import render_user_presence_rows from "../templates/user_presence_rows.hbs";
 // import * as blueslip from "./blueslip";
 import * as buddy_data from "./buddy_data";
 // import * as message_viewport from "./message_viewport";
+import {localstorage} from "./localstorage";
 // import * as padded_widget from "./padded_widget";
 // import * as ui from "./ui";
+const ls = localstorage();
 
 class BuddyListConf {
     container_sel = "#user_presences";
@@ -20,11 +22,19 @@ class BuddyListConf {
         const user_info_title = opts.user_items_title;
         const other_info = opts.other_items;
         const other_info_title = opts.other_items_title;
+        let users_title_collapsed = false;
+        let others_title_collapsed = false;
+        if (localstorage.supported()) {
+            users_title_collapsed = Boolean(ls.get("users_title_collapsed"));
+            others_title_collapsed = Boolean(ls.get("others_title_collapsed"));
+        }
         const html = render_user_presence_rows({
             users: user_info,
             users_title: user_info_title,
+            users_title_collapsed,
             others: other_info,
             others_title: other_info_title,
+            others_title_collapsed,
         });
         return html;
     }
@@ -105,6 +115,29 @@ export class BuddyList extends BuddyListConf {
 
         this.container = $(this.container_sel);
         this.container.append(html);
+
+        if (localstorage.supported()) {
+            $("#users")
+                .off("show")
+                .on("show", () => {
+                    ls.set("users_title_collapsed", false);
+                });
+            $("#users")
+                .off("hide")
+                .on("hide", () => {
+                    ls.set("users_title_collapsed", true);
+                });
+            $("#others")
+                .off("show")
+                .on("show", () => {
+                    ls.set("others_title_collapsed", false);
+                });
+            $("#others")
+                .off("hide")
+                .on("hide", () => {
+                    ls.set("others_title_collapsed", true);
+                });
+        }
     }
 
     // render_more(opts) {

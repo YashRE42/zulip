@@ -4,12 +4,28 @@ const {strict: assert} = require("assert");
 
 const _ = require("lodash");
 
-const {mock_esm, with_field, zrequire} = require("../zjsunit/namespace");
+const {mock_esm, with_field, zrequire, set_global} = require("../zjsunit/namespace");
 const {run_test} = require("../zjsunit/test");
 const blueslip = require("../zjsunit/zblueslip");
 const {page_params, user_settings} = require("../zjsunit/zpage_params");
 
 const timerender = mock_esm("../../static/js/timerender");
+
+const ls_container = new Map();
+set_global("localStorage", {
+    getItem(key) {
+        return ls_container.get(key);
+    },
+    setItem(key, val) {
+        ls_container.set(key, val);
+    },
+    removeItem(key) {
+        ls_container.delete(key);
+    },
+    clear() {
+        ls_container.clear();
+    },
+});
 
 const compose_state = zrequire("compose_state");
 const compose_fade_helper = zrequire("compose_fade_helper");

@@ -2,14 +2,29 @@
 
 const {strict: assert} = require("assert");
 
-const {zrequire} = require("../zjsunit/namespace");
+const {zrequire, set_global} = require("../zjsunit/namespace");
 const {run_test} = require("../zjsunit/test");
 // const blueslip = require("../zjsunit/zblueslip");
 const $ = require("../zjsunit/zjquery");
 
+const ls_container = new Map();
+set_global("localStorage", {
+    getItem(key) {
+        return ls_container.get(key);
+    },
+    setItem(key, val) {
+        ls_container.set(key, val);
+    },
+    removeItem(key) {
+        ls_container.delete(key);
+    },
+    clear() {
+        ls_container.clear();
+    },
+});
+
 const people = zrequire("people");
 const {BuddyList} = zrequire("buddy_list");
-
 function init_simulated_scrolling() {
     const elem = {
         dataset: {},
@@ -165,4 +180,38 @@ run_test("find_user_li w/bad key", ({override}) => {
     });
 
     assert.deepEqual(undefined_li, {length: 0});
+});
+
+run_test("two section layout collapse persistence", ({mock_template}) => {
+    people.add_active_user(alice);
+    const buddy_list = new BuddyList();
+    mock_template("user_presence_rows.hbs", false, (args) => {
+        assert.equal(args.users_title_collapsed, false);
+        assert.equal(args.others_title_collapsed, false);
+    });
+    buddy_list.populate({
+        user_keys: [alice.user_id],
+        other_keys: [bob.user_id],
+    });
+    $("#users").get_on_handler("hide")();
+    $("#others").get_on_handler("hide")();
+    mock_template("user_presence_rows.hbs", false, (args) => {
+        assert.equal(args.users_title_collapsed, true);
+        assert.equal(args.others_title_collapsed, true);
+    });
+    buddy_list.populate({
+        user_keys: [alice.user_id],
+        other_keys: [bob.user_id],
+    });
+
+    $("#users").get_on_handler("show")();
+    $("#others").get_on_handler("show")();
+    mock_template("user_presence_rows.hbs", false, (args) => {
+        assert.equal(args.users_title_collapsed, false);
+        assert.equal(args.others_title_collapsed, false);
+    });
+    buddy_list.populate({
+        user_keys: [alice.user_id],
+        other_keys: [bob.user_id],
+    });
 });
