@@ -11,6 +11,7 @@ const {page_params, user_settings} = require("../zjsunit/zpage_params");
 
 const timerender = mock_esm("../../static/js/timerender");
 
+const compose_state = zrequire("compose_state");
 const compose_fade_helper = zrequire("compose_fade_helper");
 const muted_users = zrequire("muted_users");
 const {Filter} = zrequire("../js/filter");
@@ -297,7 +298,7 @@ const denmark = {
     subscribed: false,
 };
 
-test("two section layout", () => {
+test("two section layout", ({override}) => {
     set_presence(selma.user_id, "active");
 
     stream_data.clear_subscriptions();
@@ -337,7 +338,7 @@ test("two section layout", () => {
     filter = new Filter(filter_terms);
     narrow_state.set_current_filter(filter);
 
-    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
     assert.deepEqual(key_groups.other_keys, [selma.user_id]);
     narrow_state.reset_current_filter();
@@ -351,6 +352,44 @@ test("two section layout", () => {
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id, selma.user_id]);
     assert.deepEqual(key_groups.other_keys, []);
     narrow_state.reset_current_filter();
+
+    stream_data.add_sub(denmark);
+    peer_data.set_subscribers(denmark.stream_id, [selma.user_id]);
+
+    override(compose_state, "stream_name", () => "denmark");
+    override(compose_state, "private_message_recipient", () => "");
+    compose_state.set_message_type("stream");
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
+    assert.deepEqual(key_groups.user_keys, [selma.user_id]);
+    assert.deepEqual(key_groups.other_keys, [me.user_id, alice.user_id]);
+    compose_state.set_message_type("");
+
+    override(compose_state, "stream_name", () => "");
+    override(compose_state, "private_message_recipient", () => alice.email + "," + bot.email);
+    compose_state.set_message_type("private");
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
+    assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
+    assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    compose_state.set_message_type("");
+
+    // with same overrides as before
+    compose_state.set_message_type("private");
+    filter_terms = [{operator: "pm-with", operand: alice.email + "," + bot.email}];
+    filter = new Filter(filter_terms);
+    narrow_state.set_current_filter(filter);
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
+    assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
+    assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    compose_state.set_message_type("");
+    narrow_state.reset_current_filter();
+
+    // Is there an improbable case where both "compose_state.stream_name()" and
+    // "compose_state.private_message_recipient()" are valid because we don't
+    // properly reset our compose_state? In such a case, we'd show the
+    // private_message_recipients simply because of the order of the code, but what if
+    // this is incorrect?
+
+    // Is there an even more improbable case where narrow_state also conflicts with the above?
 });
 
 test("bulk_data_hacks", () => {

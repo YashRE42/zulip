@@ -6,6 +6,7 @@ import * as blueslip from "./blueslip";
 // is called from activity (when the page first loads).
 // We should fix things so that this isn't necessary.
 import "./compose_fade_helper";
+import * as compose_state from "./compose_state";
 import * as hash_util from "./hash_util";
 import {$t} from "./i18n";
 import * as muted_users from "./muted_users";
@@ -372,7 +373,7 @@ function get_filtered_all_user_id_list(user_filter_text) {
     return user_ids;
 }
 
-function get_user_id_list_and_title(user_filter_text) {
+function get_user_id_list_and_title_for_narrow_state(user_filter_text) {
     const filter = narrow_state.filter();
     if (!filter) {
         return {user_ids: get_filtered_all_user_id_list(user_filter_text)};
@@ -393,6 +394,25 @@ function get_user_id_list_and_title(user_filter_text) {
 
     // show all users list
     return {user_ids: get_filtered_all_user_id_list(user_filter_text)};
+}
+
+function get_user_id_list_and_title_for_private_message(private_message_recipient) {
+    return {
+        user_ids: get_pm_recipients_list(private_message_recipient.split(",")),
+        user_title: $t({defaultMessage: "Recipients"}),
+    };
+}
+
+function get_user_id_list_and_title_for_stream_message(stream_name) {
+    const stream = stream_data.get_sub_by_name(stream_name);
+    let user_ids = [];
+    if (stream) {
+        user_ids = get_stream_message_recipients_list(stream.stream_id);
+    }
+    return {
+        user_ids,
+        user_title: $t({defaultMessage: "Recipients"}),
+    };
 }
 
 function get_pm_recipients_list(user_emails) {
@@ -441,7 +461,21 @@ function get_stream_message_recipients_list(stream_id) {
 }
 
 export function get_filtered_and_sorted_user_ids_and_title(user_filter_text) {
-    const users = get_user_id_list_and_title(user_filter_text);
+    let users = get_user_id_list_and_title_for_narrow_state(user_filter_text);
+    if (compose_state.composing()) {
+        const stream_name = compose_state.stream_name();
+        if (stream_name && !(stream_name === narrow_state.stream())) {
+            users = get_user_id_list_and_title_for_stream_message(stream_name);
+        }
+
+        const private_message_recipient = compose_state.private_message_recipient();
+        if (
+            private_message_recipient &&
+            !(private_message_recipient === narrow_state.pm_email_string())
+        ) {
+            users = get_user_id_list_and_title_for_private_message(private_message_recipient);
+        }
+    }
     let user_ids = filter_user_ids(user_filter_text, users.user_ids);
     user_ids = maybe_shrink_list(user_ids, user_filter_text);
     return {user_ids: sort_users(user_ids), user_title: users.user_title};

@@ -19,7 +19,6 @@ const _document = {
 };
 
 const channel = mock_esm("../../static/js/channel");
-const compose_state = mock_esm("../../static/js/compose_state");
 // const padded_widget = mock_esm("../../static/js/padded_widget");
 const pm_list = mock_esm("../../static/js/pm_list");
 const popovers = mock_esm("../../static/js/popovers");
@@ -30,6 +29,7 @@ const watchdog = mock_esm("../../static/js/watchdog");
 set_global("document", _document);
 
 const huddle_data = zrequire("huddle_data");
+const compose_state = zrequire("compose_state");
 const compose_fade = zrequire("compose_fade");
 const keydown_util = zrequire("keydown_util");
 const muted_users = zrequire("muted_users");
@@ -195,31 +195,25 @@ test("huddle_data.process_loaded_messages", () => {
     assert.deepEqual(huddle_data.get_huddles(), [user_ids_string2, user_ids_string1]);
 });
 
-test("presence_list_full_update", ({mock_template}) => {
+test("presence_list_full_update", ({override, mock_template}) => {
     mock_template("user_presence_rows.hbs", false, (data) => {
-        assert.equal(data.users.length, 7);
+        assert.equal(data.users.length, 2);
         assert.equal(data.users[0].user_id, me.user_id);
     });
 
     $(".user-list-filter").trigger("focus");
-    compose_state.private_message_recipient = () => fred.email;
+    override(compose_state, "composing", () => true);
+    override(compose_state, "stream_name", () => "");
+    override(compose_state, "private_message_recipient", () => fred.email);
     compose_fade.set_focused_recipient("private");
 
     const key_groups = activity.build_user_sidebar();
 
     assert.deepEqual(key_groups, {
-        other_keys: [],
-        other_keys_title: undefined,
-        user_keys: [
-            me.user_id,
-            alice.user_id,
-            fred.user_id,
-            jill.user_id,
-            norbert.user_id,
-            zoe.user_id,
-            mark.user_id,
-        ],
-        user_keys_title: undefined,
+        other_keys: [1, 3, 5, 6, 4],
+        other_keys_title: "translated: Others",
+        user_keys: [me.user_id, fred.user_id],
+        user_keys_title: "translated: Recipients",
     });
 });
 
