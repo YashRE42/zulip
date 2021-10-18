@@ -3,7 +3,7 @@ import type {Page} from "puppeteer";
 import common from "../puppeteer_lib/common";
 
 async function open_set_user_status_modal(page: Page): Promise<void> {
-    const menu_icon_selector = ".user_sidebar_entry:nth-child(2) .user-list-sidebar-menu-icon";
+    const menu_icon_selector = ".user_sidebar_entry:first-child .user-list-sidebar-menu-icon";
     // We are clicking on the menu icon with the help of `waitForFunction` because the list
     // re-renders many times and can cause the element to become stale.
     await page.waitForFunction(

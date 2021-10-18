@@ -90,6 +90,18 @@
 
     .buddy_list_heading {
         font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+
+    .fa-chevron-down {
+        margin: 0 5px 2px 1.25px;
+        font-size: 8px;
+        transition: transform 200ms ease-in-out;
+    }
+
+    .collapsed .fa-chevron-down {
+        transform: rotate(-90deg);
     }
 }
 
