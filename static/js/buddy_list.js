@@ -17,10 +17,14 @@ class BuddyListConf {
 
     items_to_html(opts) {
         const user_info = opts.user_items;
+        const user_info_title = opts.user_items_title;
         const other_info = opts.other_items;
+        const other_info_title = opts.other_items_title;
         const html = render_user_presence_rows({
             users: user_info,
+            users_title: user_info_title,
             others: other_info,
+            others_title: other_info_title,
         });
         return html;
     }
@@ -77,6 +81,7 @@ export class BuddyList extends BuddyListConf {
         }
 
         let user_items;
+        const user_items_title = opts.user_keys_title;
         if (this.user_keys.length > 0) {
             user_items = this.get_data_from_keys({
                 keys: this.user_keys,
@@ -84,6 +89,7 @@ export class BuddyList extends BuddyListConf {
         }
 
         let other_items;
+        const other_items_title = opts.other_keys_title;
         if (this.other_keys.length > 0) {
             other_items = this.get_data_from_keys({
                 keys: this.other_keys,
@@ -92,7 +98,9 @@ export class BuddyList extends BuddyListConf {
 
         const html = this.items_to_html({
             user_items,
+            user_items_title,
             other_items,
+            other_items_title,
         });
 
         this.container = $(this.container_sel);

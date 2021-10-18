@@ -372,19 +372,27 @@ function get_filtered_all_user_id_list(user_filter_text) {
     return user_ids;
 }
 
-function get_user_id_list(user_filter_text) {
+function get_user_id_list_and_title(user_filter_text) {
     const filter = narrow_state.filter();
     if (!filter) {
-        return get_filtered_all_user_id_list(user_filter_text);
+        return {user_ids: get_filtered_all_user_id_list(user_filter_text)};
     }
+
     // show separate lists for stream or topic narrows and pm thread narrow
     if (narrow_state.stream()) {
-        return get_stream_message_recipients_list(narrow_state.stream_sub().stream_id);
+        return {
+            user_ids: get_stream_message_recipients_list(narrow_state.stream_sub().stream_id),
+            user_title: $t({defaultMessage: "Subscribers"}),
+        };
     } else if (filter.has_operator("pm-with")) {
-        return get_pm_recipients_list(filter.operands("pm-with")[0].split(","));
+        return {
+            user_ids: get_pm_recipients_list(filter.operands("pm-with")[0].split(",")),
+            user_title: $t({defaultMessage: "Recipients"}),
+        };
     }
+
     // show all users list
-    return get_filtered_all_user_id_list(user_filter_text);
+    return {user_ids: get_filtered_all_user_id_list(user_filter_text)};
 }
 
 function get_pm_recipients_list(user_emails) {
@@ -432,29 +440,36 @@ function get_stream_message_recipients_list(stream_id) {
     return user_ids;
 }
 
-export function get_filtered_and_sorted_user_ids(user_filter_text) {
-    let user_ids = get_user_id_list(user_filter_text);
-    user_ids = filter_user_ids(user_filter_text, user_ids);
+export function get_filtered_and_sorted_user_ids_and_title(user_filter_text) {
+    const users = get_user_id_list_and_title(user_filter_text);
+    let user_ids = filter_user_ids(user_filter_text, users.user_ids);
     user_ids = maybe_shrink_list(user_ids, user_filter_text);
-    return sort_users(user_ids);
+    return {user_ids: sort_users(user_ids), user_title: users.user_title};
 }
 
-export function get_filtered_and_sorted_other_ids(user_filter_text, user_ids) {
+export function get_filtered_and_sorted_other_ids_and_title(user_filter_text, user_ids) {
     const all_user_ids = get_filtered_all_user_id_list(user_filter_text);
     let other_ids = all_user_ids.filter(
         (potential_other_id) => !user_ids.includes(potential_other_id),
     );
     other_ids = maybe_shrink_list(other_ids, user_filter_text);
-    return sort_users(other_ids);
+    let other_title;
+    if (other_ids.length) {
+        other_title = $t({defaultMessage: "Others"});
+    }
+    return {other_ids: sort_users(other_ids), other_title};
 }
 
-export function get_filtered_and_sorted_key_groups(user_filter_text) {
-    const user_ids = get_filtered_and_sorted_user_ids(user_filter_text);
-    const other_ids = get_filtered_and_sorted_other_ids(user_filter_text, user_ids);
-    return {
-        user_keys: user_ids,
-        other_keys: other_ids,
+export function get_filtered_and_sorted_key_groups_and_titles(user_filter_text) {
+    const users = get_filtered_and_sorted_user_ids_and_title(user_filter_text);
+    const others = get_filtered_and_sorted_other_ids_and_title(user_filter_text, users.user_ids);
+    const key_groups_and_titles = {
+        user_keys: users.user_ids,
+        user_keys_title: users.user_title,
+        other_keys: others.other_ids,
+        other_keys_title: others.other_title,
     };
+    return key_groups_and_titles;
 }
 
 export function matches_filter(user_filter_text, user_id) {

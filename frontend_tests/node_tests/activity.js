@@ -209,6 +209,7 @@ test("presence_list_full_update", ({mock_template}) => {
 
     assert.deepEqual(key_groups, {
         other_keys: [],
+        other_keys_title: undefined,
         user_keys: [
             me.user_id,
             alice.user_id,
@@ -218,6 +219,7 @@ test("presence_list_full_update", ({mock_template}) => {
             zoe.user_id,
             mark.user_id,
         ],
+        user_keys_title: undefined,
     });
 });
 

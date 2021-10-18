@@ -269,7 +269,7 @@ test("simple search", () => {
     set_presence(selma.user_id, "active");
     set_presence(me.user_id, "active");
 
-    const user_ids = buddy_data.get_filtered_and_sorted_user_ids("sel");
+    const {user_ids} = buddy_data.get_filtered_and_sorted_user_ids_and_title("sel");
 
     assert.deepEqual(user_ids, [selma.user_id]);
 });
@@ -278,14 +278,14 @@ test("muted users excluded from search", () => {
     people.add_active_user(selma);
     muted_users.add_muted_user(selma.user_id);
 
-    let user_ids = buddy_data.get_filtered_and_sorted_user_ids();
+    let {user_ids} = buddy_data.get_filtered_and_sorted_user_ids_and_title();
     assert.equal(user_ids.includes(selma.user_id), false);
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("sel");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("sel").user_ids;
     assert.deepEqual(user_ids, []);
     assert.ok(!buddy_data.matches_filter("sel", selma.user_id));
 
     muted_users.remove_muted_user(selma.user_id);
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("sel");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("sel").user_ids;
     assert.deepEqual(user_ids, [selma.user_id]);
     assert.ok(buddy_data.matches_filter("sel", selma.user_id));
 });
@@ -317,7 +317,7 @@ test("two section layout", () => {
     // we're looking at a stream we're not subscribed to
     narrow_state.set_current_filter(filter);
 
-    let key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    let key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [selma.user_id]);
     assert.deepEqual(key_groups.other_keys, [me.user_id, alice.user_id]);
     narrow_state.reset_current_filter();
@@ -327,7 +327,7 @@ test("two section layout", () => {
     filter = new Filter(filter_terms);
     narrow_state.set_current_filter(filter);
 
-    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
     assert.deepEqual(key_groups.other_keys, [selma.user_id]);
     narrow_state.reset_current_filter();
@@ -347,7 +347,7 @@ test("two section layout", () => {
     // group-pm-with is a searching / interleaved narrow
     narrow_state.set_current_filter(filter);
 
-    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id, selma.user_id]);
     assert.deepEqual(key_groups.other_keys, []);
     narrow_state.reset_current_filter();
@@ -384,30 +384,30 @@ test("bulk_data_hacks", () => {
 
     // Even though we have 1000 users, we only get the 400 active
     // users.  This is a consequence of buddy_data.maybe_shrink_list.
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids();
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title().user_ids;
     assert.equal(user_ids.length, 400);
 
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("").user_ids;
     assert.equal(user_ids.length, 400);
 
     // We don't match on "so", because it's not at the start of a
     // word in the name/email.
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("so");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("so").user_ids;
     assert.equal(user_ids.length, 0);
 
     // We match on "h" for the first name, and the result limit
     // is relaxed for searches.  (We exclude "me", though.)
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("h");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("h").user_ids;
     assert.equal(user_ids.length, 996);
 
     // We match on "p" for the email.
-    user_ids = buddy_data.get_filtered_and_sorted_user_ids("p");
+    user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("p").user_ids;
     assert.equal(user_ids.length, 994);
 
     // Make our shrink limit higher, and go back to an empty search.
     // We won't get all 1000 users, just the present ones.
     with_field(buddy_data, "max_size_before_shrinking", 50000, () => {
-        user_ids = buddy_data.get_filtered_and_sorted_user_ids("");
+        user_ids = buddy_data.get_filtered_and_sorted_user_ids_and_title("").user_ids;
     });
     assert.equal(user_ids.length, 700);
 });
@@ -415,14 +415,18 @@ test("bulk_data_hacks", () => {
 test("always show me", ({override}) => {
     const present_user_ids = [];
     override(presence, "get_user_ids", () => present_user_ids);
-    assert.deepEqual(buddy_data.get_filtered_and_sorted_user_ids(""), [me.user_id]);
+    assert.deepEqual(buddy_data.get_filtered_and_sorted_user_ids_and_title("").user_ids, [
+        me.user_id,
+    ]);
 
     // Make sure we didn't mutate the list passed to us.
     assert.deepEqual(present_user_ids, []);
 
     // try to make us show twice
     present_user_ids.push(me.user_id);
-    assert.deepEqual(buddy_data.get_filtered_and_sorted_user_ids(""), [me.user_id]);
+    assert.deepEqual(buddy_data.get_filtered_and_sorted_user_ids_and_title("").user_ids, [
+        me.user_id,
+    ]);
 });
 
 test("user_status", () => {
@@ -552,5 +556,5 @@ test("error handling", ({override}) => {
     override(presence, "get_user_ids", () => [42]);
     blueslip.expect("error", "Unknown user_id in get_by_user_id: 42");
     blueslip.expect("warn", "Got user_id in presence but not people: 42");
-    buddy_data.get_filtered_and_sorted_user_ids();
+    buddy_data.get_filtered_and_sorted_user_ids_and_title();
 });

@@ -1,15 +1,23 @@
 {{! User presence rows }}
-<h5 class="buddy_list_heading" role="button" data-toggle="collapse" data-target="#users" aria-controls="users" aria-expanded="true"><i class="fa fa-chevron-down" aria-hidden="true"></i> users</h5>
-<div class="collapse in" id="users">
+{{#if users_title}}
+    <h5 class="buddy_list_heading" role="button" data-toggle="collapse" data-target="#users" aria-controls="users" aria-expanded="true"><i class="fa fa-chevron-down" aria-hidden="true"></i>{{ users_title }}</h5>
+    <div class="collapse in" id="users">
+        {{#each users}}
+        {{> user_presence_row}}
+        {{/each}}
+    </div>
+{{else}}
     {{#each users}}
     {{> user_presence_row}}
     {{/each}}
-</div>
+{{/if}}
 
+{{#if others_title}}
 {{! other presence rows }}
-<h5 class="buddy_list_heading" role="button" data-toggle="collapse" data-target="#others" aria-controls="others" aria-expanded="true"><i class="fa fa-chevron-down" aria-hidden="true"></i> others</h5>
+<h5 class="buddy_list_heading" role="button" data-toggle="collapse" data-target="#others" aria-controls="others" aria-expanded="true"><i class="fa fa-chevron-down" aria-hidden="true"></i> {{ others_title }}</h5>
 <div class="collapse in" id="others">
     {{#each others}}
     {{> user_presence_row}}
     {{/each}}
 </div>
+{{/if}}
