@@ -90,7 +90,7 @@ people.initialize_current_user(me.user_id);
 
 function clear_buddy_list() {
     buddy_list.populate({
-        keys: [],
+        user_keys: [],
     });
 }
 
@@ -204,17 +204,19 @@ test("presence_list_full_update", ({mock_template}) => {
     compose_state.private_message_recipient = () => fred.email;
     compose_fade.set_focused_recipient("private");
 
-    const user_ids = activity.build_user_sidebar();
+    const key_groups = activity.build_user_sidebar();
 
-    assert.deepEqual(user_ids, [
-        me.user_id,
-        alice.user_id,
-        fred.user_id,
-        jill.user_id,
-        norbert.user_id,
-        zoe.user_id,
-        mark.user_id,
-    ]);
+    assert.deepEqual(key_groups, {
+        user_keys: [
+            me.user_id,
+            alice.user_id,
+            fred.user_id,
+            jill.user_id,
+            norbert.user_id,
+            zoe.user_id,
+            mark.user_id,
+        ],
+    });
 });
 
 function simulate_right_column_buddy_list() {
@@ -284,7 +286,7 @@ test("handlers", ({override, mock_template}) => {
     function init() {
         $.clear_all_elements();
         buddy_list.populate({
-            keys: [me.user_id, alice.user_id, fred.user_id],
+            user_keys: [me.user_id, alice.user_id, fred.user_id],
         });
         activity.set_cursor_and_filter();
 
@@ -397,7 +399,7 @@ test("first/prev/next", ({override, mock_template}) => {
     assert.equal(buddy_list.prev_key(alice.user_id), undefined);
     assert.equal(buddy_list.next_key(alice.user_id), undefined);
 
-    override(buddy_list, "insert_new_html", () => {});
+    override(buddy_list, "insert_new_html_for_user", () => {});
 
     activity.redraw_user(alice.user_id);
     activity.redraw_user(fred.user_id);
@@ -559,7 +561,7 @@ test("update_presence_info", ({override}) => {
     buddy_list_add(alice.user_id, alice_li);
 
     let inserted;
-    override(buddy_list, "insert_or_move", () => {
+    override(buddy_list, "insert_or_move_user", () => {
         inserted = true;
     });
 
@@ -637,7 +639,7 @@ test("initialize", ({override, mock_template}) => {
 
 test("away_status", ({override}) => {
     override(pm_list, "update_private_messages", () => {});
-    override(buddy_list, "insert_or_move", () => {});
+    override(buddy_list, "insert_or_move_user", () => {});
 
     assert.ok(!user_status.is_away(alice.user_id));
     activity.on_set_away(alice.user_id);

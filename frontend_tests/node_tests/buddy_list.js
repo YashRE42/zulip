@@ -59,8 +59,8 @@ run_test("basics", ({override}) => {
     });
 
     override(buddy_list, "items_to_html", (opts) => {
-        const items = opts.items;
-        assert.equal(items, "data-stub");
+        const user_items = opts.user_items;
+        assert.equal(user_items, "data-stub");
         return "html-stub";
     });
 
@@ -71,7 +71,7 @@ run_test("basics", ({override}) => {
     };
 
     buddy_list.populate({
-        keys: [alice.user_id],
+        user_keys: [alice.user_id],
     });
     assert.ok(appended);
 
@@ -84,7 +84,7 @@ run_test("basics", ({override}) => {
         return alice_li;
     });
 
-    const li = buddy_list.find_li({
+    const li = buddy_list.find_user_li({
         key: alice.user_id,
     });
     assert.equal(li, alice_li);
@@ -112,10 +112,10 @@ run_test("basics", ({override}) => {
 //     });
 // });
 
-run_test("find_li w/force_render", ({override}) => {
+run_test("find_user_li w/force_render", ({override}) => {
     const buddy_list = new BuddyList();
 
-    // If we call find_li w/force_render set, and the
+    // If we call find_user_li w/force_render set, and the
     // key is not already rendered in DOM, then the
     // widget will call show_key to force-render it.
     const key = "999";
@@ -126,7 +126,7 @@ run_test("find_li w/force_render", ({override}) => {
         return stub_li;
     });
 
-    buddy_list.keys = ["foo", "bar", key, "baz"];
+    buddy_list.user_keys = ["foo", "bar", key, "baz"];
 
     let shown;
 
@@ -135,13 +135,13 @@ run_test("find_li w/force_render", ({override}) => {
     //     shown = true;
     // });
 
-    const empty_li = buddy_list.find_li({
+    const empty_li = buddy_list.find_user_li({
         key,
     });
     assert.equal(empty_li, stub_li);
     assert.ok(!shown);
 
-    const li = buddy_list.find_li({
+    const li = buddy_list.find_user_li({
         key,
         force_render: true,
     });
@@ -150,11 +150,11 @@ run_test("find_li w/force_render", ({override}) => {
     // assert.ok(shown);
 });
 
-run_test("find_li w/bad key", ({override}) => {
+run_test("find_user_li w/bad key", ({override}) => {
     const buddy_list = new BuddyList();
     override(buddy_list, "get_li_from_key", () => ({length: 0}));
 
-    const undefined_li = buddy_list.find_li({
+    const undefined_li = buddy_list.find_user_li({
         key: "not-there",
         force_render: true,
     });

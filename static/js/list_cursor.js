@@ -143,3 +143,14 @@ export class ListCursor {
         this.go_to(key);
     }
 }
+
+export class TwoSectionListCursor extends ListCursor {
+    constructor({highlight_class, list}) {
+        list.find_li = list.find_user_li;
+        list.first_key = list.first_user_key;
+        list.prev_key = list.prev_user_key;
+        list.next_key = list.next_user_key;
+        list.keys = list.user_keys;
+        super({highlight_class, list});
+    }
+}
