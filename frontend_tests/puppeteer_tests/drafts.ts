@@ -40,7 +40,7 @@ async function create_stream_message_draft(page: Page): Promise<void> {
     await page.keyboard.press("KeyC");
     await page.waitForSelector("#stream-message", {visible: true});
     await common.fill_form(page, "form#send_message_form", {
-        stream_message_recipient_stream: "all",
+        stream_message_recipient_stream: "Denmark",
         stream_message_recipient_topic: "tests",
         content: "Test stream message.",
     });
@@ -82,7 +82,7 @@ async function test_previously_created_drafts_rendered(page: Page): Promise<void
             page,
             ".draft-row .message_header_stream .stream_label",
         ),
-        "all",
+        "Denmark",
     );
     assert.strictEqual(
         await common.get_text_from_selector(
@@ -121,7 +121,7 @@ async function test_restore_message_draft(page: Page): Promise<void> {
     await page.waitForSelector("#stream-message", {visible: true});
     await page.waitForSelector("#preview_message_area", {hidden: true});
     await common.check_form_contents(page, "form#send_message_form", {
-        stream_message_recipient_stream: "all",
+        stream_message_recipient_stream: "Denmark",
         stream_message_recipient_topic: "tests",
         content: "Test stream message.",
     });
@@ -134,7 +134,7 @@ async function test_restore_message_draft(page: Page): Promise<void> {
 
 async function edit_stream_message_draft(page: Page): Promise<void> {
     await common.fill_form(page, "form#send_message_form", {
-        stream_message_recipient_stream: "all",
+        stream_message_recipient_stream: "Denmark",
         stream_message_recipient_topic: "tests",
         content: "Updated stream message",
     });
@@ -151,7 +151,7 @@ async function test_edited_draft_message(page: Page): Promise<void> {
             page,
             ".draft-row .message_header_stream .stream_label",
         ),
-        "all",
+        "Denmark",
     );
     assert.strictEqual(
         await common.get_text_from_selector(
