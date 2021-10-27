@@ -1,4 +1,11 @@
 {{! User presence rows }}
+<h5 class="buddy_list_heading">users</h5>
 {{#each users}}
+{{> user_presence_row}}
+{{/each}}
+
+{{! other presence rows }}
+<h5 class="buddy_list_heading">others</h5>
+{{#each others}}
 {{> user_presence_row}}
 {{/each}}

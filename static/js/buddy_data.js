@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import * as blueslip from "./blueslip";
 // We need to import comose_fade_helper here so that
 // we have focused_recipient when comose_fade_helper
@@ -7,9 +9,11 @@ import "./compose_fade_helper";
 import * as hash_util from "./hash_util";
 import {$t} from "./i18n";
 import * as muted_users from "./muted_users";
+import * as narrow_state from "./narrow_state";
 import {page_params} from "./page_params";
 import * as people from "./people";
 import * as presence from "./presence";
+import * as stream_data from "./stream_data";
 import * as timerender from "./timerender";
 import * as unread from "./unread";
 import * as user_status from "./user_status";
@@ -344,7 +348,7 @@ function filter_user_ids(user_filter_text, user_ids) {
     return Array.from(user_id_dict.keys());
 }
 
-function get_filtered_user_id_list(user_filter_text) {
+function get_filtered_all_user_id_list(user_filter_text) {
     let base_user_id_list;
 
     if (user_filter_text) {
@@ -368,11 +372,89 @@ function get_filtered_user_id_list(user_filter_text) {
     return user_ids;
 }
 
+function get_user_id_list(user_filter_text) {
+    const filter = narrow_state.filter();
+    if (!filter) {
+        return get_filtered_all_user_id_list(user_filter_text);
+    }
+    // show separate lists for stream or topic narrows and pm thread narrow
+    if (narrow_state.stream()) {
+        return get_stream_message_recipients_list(narrow_state.stream_sub().stream_id);
+    } else if (filter.has_operator("pm-with")) {
+        return get_pm_recipients_list(filter.operands("pm-with")[0].split(","));
+    }
+    // show all users list
+    return get_filtered_all_user_id_list(user_filter_text);
+}
+
+function get_pm_recipients_list(user_emails) {
+    const user_ids = _.reduce(
+        user_emails,
+        (list, user_email) => {
+            if (people.is_valid_email_for_compose(user_email)) {
+                const user_id = people.get_user_id(user_email);
+                const person = people.get_by_user_id(user_id);
+                // if the user is bot, do not show in right sidebar.
+                if (person && !person.is_bot) {
+                    list.push(user_id);
+                }
+                return list;
+            }
+            return list;
+        },
+        [],
+    );
+
+    // Add current user to buddy list
+    const me = people.my_current_user_id();
+    if (!_.includes(user_ids, me)) {
+        user_ids.push(me);
+    }
+
+    return user_ids;
+}
+
+function get_stream_message_recipients_list(stream_id) {
+    let user_ids = people.get_active_user_ids();
+    user_ids = _.filter(user_ids, (user_id) => {
+        const person = people.get_by_user_id(user_id);
+        if (
+            person && // if the user is bot, do not show in right sidebar.
+            person.is_bot
+        ) {
+            return false;
+        }
+        if (stream_id && !stream_data.is_user_subscribed(stream_id, person.user_id)) {
+            return false;
+        }
+        return true;
+    });
+    return user_ids;
+}
+
 export function get_filtered_and_sorted_user_ids(user_filter_text) {
-    let user_ids;
-    user_ids = get_filtered_user_id_list(user_filter_text);
+    let user_ids = get_user_id_list(user_filter_text);
+    user_ids = filter_user_ids(user_filter_text, user_ids);
     user_ids = maybe_shrink_list(user_ids, user_filter_text);
     return sort_users(user_ids);
+}
+
+export function get_filtered_and_sorted_other_ids(user_filter_text, user_ids) {
+    const all_user_ids = get_filtered_all_user_id_list(user_filter_text);
+    let other_ids = all_user_ids.filter(
+        (potential_other_id) => !user_ids.includes(potential_other_id),
+    );
+    other_ids = maybe_shrink_list(other_ids, user_filter_text);
+    return sort_users(other_ids);
+}
+
+export function get_filtered_and_sorted_key_groups(user_filter_text) {
+    const user_ids = get_filtered_and_sorted_user_ids(user_filter_text);
+    const other_ids = get_filtered_and_sorted_other_ids(user_filter_text, user_ids);
+    return {
+        user_keys: user_ids,
+        other_keys: other_ids,
+    };
 }
 
 export function matches_filter(user_filter_text, user_id) {

@@ -13,6 +13,8 @@ const timerender = mock_esm("../../static/js/timerender");
 
 const compose_fade_helper = zrequire("compose_fade_helper");
 const muted_users = zrequire("muted_users");
+const {Filter} = zrequire("../js/filter");
+const narrow_state = zrequire("narrow_state");
 const peer_data = zrequire("peer_data");
 const people = zrequire("people");
 const presence = zrequire("presence");
@@ -286,6 +288,69 @@ test("muted users excluded from search", () => {
     user_ids = buddy_data.get_filtered_and_sorted_user_ids("sel");
     assert.deepEqual(user_ids, [selma.user_id]);
     assert.ok(buddy_data.matches_filter("sel", selma.user_id));
+});
+
+const denmark = {
+    color: "blue",
+    name: "Denmark",
+    stream_id: 101,
+    subscribed: false,
+};
+
+test("two section layout", () => {
+    set_presence(selma.user_id, "active");
+
+    stream_data.clear_subscriptions();
+    stream_data.add_sub(denmark);
+    people.add_active_user(selma);
+    set_presence(selma.user_id, "active");
+    peer_data.set_subscribers(denmark.stream_id, [selma.user_id]);
+
+    people.add_active_user(alice);
+    set_presence(alice.user_id, "active");
+    // alice is not subscribed to denmark
+
+    people.add_active_user(bot);
+
+    let filter_terms = [{operator: "stream", operand: "Denmark"}];
+    let filter = new Filter(filter_terms);
+    // we're looking at a stream we're not subscribed to
+    narrow_state.set_current_filter(filter);
+
+    let key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    assert.deepEqual(key_groups.user_keys, [selma.user_id]);
+    assert.deepEqual(key_groups.other_keys, [me.user_id, alice.user_id]);
+    narrow_state.reset_current_filter();
+    stream_data.clear_subscriptions();
+
+    filter_terms = [{operator: "pm-with", operand: alice.email + "," + bot.email}];
+    filter = new Filter(filter_terms);
+    narrow_state.set_current_filter(filter);
+
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
+    assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    narrow_state.reset_current_filter();
+
+    // lets try a user that does not exist:
+    filter_terms = [{operator: "pm-with", operand: "unknownuser@email.com," + alice.email}];
+    filter = new Filter(filter_terms);
+    narrow_state.set_current_filter(filter);
+
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
+    assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    narrow_state.reset_current_filter();
+
+    filter_terms = [{operator: "group-pm-with", operand: alice.email + "," + bot.email}];
+    filter = new Filter(filter_terms);
+    // group-pm-with is a searching / interleaved narrow
+    narrow_state.set_current_filter(filter);
+
+    key_groups = buddy_data.get_filtered_and_sorted_key_groups();
+    assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id, selma.user_id]);
+    assert.deepEqual(key_groups.other_keys, []);
+    narrow_state.reset_current_filter();
 });
 
 test("bulk_data_hacks", () => {

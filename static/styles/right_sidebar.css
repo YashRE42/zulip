@@ -87,6 +87,10 @@
         color: inherit;
         margin-left: 0;
     }
+
+    .buddy_list_heading {
+        font-weight: 700;
+    }
 }
 
 #invite-user-link i {

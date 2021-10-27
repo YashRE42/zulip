@@ -29,7 +29,13 @@ const alice = {
     user_id: 10,
     full_name: "Alice Smith",
 };
-people.add_active_user(alice);
+
+const bob = {
+    email: "bob@zulip.com",
+    user_id: 11,
+    full_name: "bob Smith",
+};
+people.add_active_user(bob);
 
 run_test("get_items", () => {
     const buddy_list = new BuddyList();
@@ -52,15 +58,13 @@ run_test("basics", ({override}) => {
     const buddy_list = new BuddyList();
     init_simulated_scrolling();
 
-    override(buddy_list, "get_data_from_keys", (opts) => {
-        const keys = opts.keys;
-        assert.deepEqual(keys, [alice.user_id]);
-        return "data-stub";
-    });
+    override(buddy_list, "get_data_from_keys", () => "data-stub");
 
     override(buddy_list, "items_to_html", (opts) => {
         const user_items = opts.user_items;
+        const other_items = opts.other_items;
         assert.equal(user_items, "data-stub");
+        assert.equal(other_items, "data-stub");
         return "html-stub";
     });
 
@@ -72,6 +76,7 @@ run_test("basics", ({override}) => {
 
     buddy_list.populate({
         user_keys: [alice.user_id],
+        other_keys: [bob.user_id],
     });
     assert.ok(appended);
 

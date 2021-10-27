@@ -17,8 +17,10 @@ class BuddyListConf {
 
     items_to_html(opts) {
         const user_info = opts.user_items;
+        const other_info = opts.other_items;
         const html = render_user_presence_rows({
             users: user_info,
+            others: other_info,
         });
         return html;
     }
@@ -59,6 +61,7 @@ class BuddyListConf {
 
 export class BuddyList extends BuddyListConf {
     user_keys = [];
+    other_keys = [];
 
     populate(opts) {
         this.render_count = 0;
@@ -67,17 +70,29 @@ export class BuddyList extends BuddyListConf {
         // We rely on our caller to give us items
         // in already-sorted order.
         this.user_keys = opts.user_keys;
+        this.other_keys = opts.other_keys;
 
-        if (this.user_keys.length === 0) {
+        if (this.user_keys.length === 0 && this.other_keys.length === 0) {
             return;
         }
 
-        const user_items = this.get_data_from_keys({
-            keys: this.user_keys,
-        });
+        let user_items;
+        if (this.user_keys.length > 0) {
+            user_items = this.get_data_from_keys({
+                keys: this.user_keys,
+            });
+        }
+
+        let other_items;
+        if (this.other_keys.length > 0) {
+            other_items = this.get_data_from_keys({
+                keys: this.other_keys,
+            });
+        }
 
         const html = this.items_to_html({
             user_items,
+            other_items,
         });
 
         this.container = $(this.container_sel);

@@ -78,7 +78,7 @@ function test(label, f) {
 
 test("clear_search", ({override}) => {
     override(fake_buddy_list, "populate", (user_ids) => {
-        assert.deepEqual(user_ids, {user_keys: ordered_user_ids});
+        assert.deepEqual(user_ids, {user_keys: ordered_user_ids, other_keys: []});
     });
     override(presence, "get_status", () => "active");
     override(presence, "get_user_ids", () => all_user_ids);

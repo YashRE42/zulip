@@ -91,6 +91,7 @@ people.initialize_current_user(me.user_id);
 function clear_buddy_list() {
     buddy_list.populate({
         user_keys: [],
+        other_keys: [],
     });
 }
 
@@ -207,6 +208,7 @@ test("presence_list_full_update", ({mock_template}) => {
     const key_groups = activity.build_user_sidebar();
 
     assert.deepEqual(key_groups, {
+        other_keys: [],
         user_keys: [
             me.user_id,
             alice.user_id,
@@ -287,6 +289,7 @@ test("handlers", ({override, mock_template}) => {
         $.clear_all_elements();
         buddy_list.populate({
             user_keys: [me.user_id, alice.user_id, fred.user_id],
+            other_keys: [],
         });
         activity.set_cursor_and_filter();
 
