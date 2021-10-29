@@ -161,7 +161,7 @@ export function update_unread_counts(new_unread_count, new_pm_count) {
 }
 
 export function redraw_favicon() {
-    // Add redraw call here
+    favicon.update_favicon(unread_count, pm_count);
 }
 
 export function is_window_focused() {

@@ -439,6 +439,7 @@ run_test("realm settings", ({override}) => {
 
     event = event_fixtures.realm__update_dict__icon;
     override(realm_icon, "rerender", noop);
+    override(notifications, "redraw_favicon", noop);
 
     test_electron_dispatch(event, (key, val) => {
         assert_same(key, "realm_icon_url");

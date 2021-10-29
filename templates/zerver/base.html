@@ -16,8 +16,12 @@
                 {% endif %}
             {% endif %}
         {% endblock %}
+        {% if user_profile and user_profile.realm_icon_as_favicon %}
+        <link id="favicon" rel="icon" href="{{ page_params.realm_icon_url }}" />
+        {% else %}
         <link id="favicon" rel="icon" href="/static/images/favicon.svg?v=4" />
-        <link rel="alternate icon" href="/static/images/favicon.png?v=4" />
+        {% endif %}
+        <link id="alternate_icon" rel="alternate icon" href="/static/images/favicon.png?v=4" />
         {% block meta_viewport %}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {% endblock %}

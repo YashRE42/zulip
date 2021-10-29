@@ -281,6 +281,11 @@ export function dispatch_normal_event(event) {
                                     );
                                 }
                             }
+                            // it's a bit strange that we're calling a function in
+                            // notifications to redraw the favicon...but we do this
+                            // because favicon.js does not keep track of unreads,
+                            // once they have been rendered.
+                            notifications.redraw_favicon();
                             break;
                         case "logo":
                             page_params.realm_logo_url = event.data.logo_url;
