@@ -53,7 +53,7 @@ export function set_new_user_input(value) {
 }
 
 function get_pm_list_item(user_id) {
-    return buddy_list.find_user_li({
+    return buddy_list.find_li({
         key: user_id,
     });
 }
@@ -102,7 +102,7 @@ export function redraw_user(user_id) {
 
     const info = buddy_data.get_item(user_id);
 
-    buddy_list.insert_or_move_user({
+    buddy_list.insert_or_move({
         key: user_id,
         item: info,
     });

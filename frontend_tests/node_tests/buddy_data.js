@@ -337,6 +337,10 @@ test("two section layout", ({override}) => {
     let key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [selma.user_id]);
     assert.deepEqual(key_groups.other_keys, [me.user_id, alice.user_id]);
+    let selma_section = buddy_data.does_belong_to_users_or_others_section(selma.user_id);
+    assert.equal(selma_section, "users");
+    let alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "others");
     narrow_state.reset_current_filter();
     stream_data.clear_subscriptions();
 
@@ -347,6 +351,10 @@ test("two section layout", ({override}) => {
     key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
     assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "users");
+    selma_section = buddy_data.does_belong_to_users_or_others_section(selma.user_id);
+    assert.equal(selma_section, "others");
     narrow_state.reset_current_filter();
 
     // lets try a user that does not exist:
@@ -357,6 +365,10 @@ test("two section layout", ({override}) => {
     key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
     assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "users");
+    selma_section = buddy_data.does_belong_to_users_or_others_section(selma.user_id);
+    assert.equal(selma_section, "others");
     narrow_state.reset_current_filter();
 
     filter_terms = [{operator: "group-pm-with", operand: alice.email + "," + bot.email}];
@@ -367,6 +379,8 @@ test("two section layout", ({override}) => {
     key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id, selma.user_id]);
     assert.deepEqual(key_groups.other_keys, []);
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "users");
     narrow_state.reset_current_filter();
 
     stream_data.add_sub(denmark);
@@ -378,6 +392,10 @@ test("two section layout", ({override}) => {
     key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [selma.user_id]);
     assert.deepEqual(key_groups.other_keys, [me.user_id, alice.user_id]);
+    selma_section = buddy_data.does_belong_to_users_or_others_section(selma.user_id);
+    assert.equal(selma_section, "users");
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "others");
     compose_state.set_message_type("");
 
     override(compose_state, "stream_name", () => "");
@@ -386,6 +404,10 @@ test("two section layout", ({override}) => {
     key_groups = buddy_data.get_filtered_and_sorted_key_groups_and_titles();
     assert.deepEqual(key_groups.user_keys, [me.user_id, alice.user_id]);
     assert.deepEqual(key_groups.other_keys, [selma.user_id]);
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "users");
+    selma_section = buddy_data.does_belong_to_users_or_others_section(selma.user_id);
+    assert.equal(selma_section, "others");
     compose_state.set_message_type("");
 
     // with same overrides as before
@@ -406,6 +428,13 @@ test("two section layout", ({override}) => {
     // this is incorrect?
 
     // Is there an even more improbable case where narrow_state also conflicts with the above?
+
+    override(compose_state, "composing", () => true);
+    override(compose_state, "stream_name", () => "");
+    override(compose_state, "private_message_recipient", () => "");
+    blueslip.expect("error", "compose_state composing but not stream or private_message");
+    alice_section = buddy_data.does_belong_to_users_or_others_section(alice.user_id);
+    assert.equal(alice_section, "users");
 });
 
 test("bulk_data_hacks", () => {

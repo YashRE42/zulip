@@ -146,11 +146,11 @@ export class ListCursor {
 
 export class TwoSectionListCursor extends ListCursor {
     constructor({highlight_class, list}) {
-        list.find_li = list.find_user_li;
-        list.first_key = list.first_user_key;
-        list.prev_key = list.prev_user_key;
-        list.next_key = list.next_user_key;
-        list.keys = list.user_keys;
         super({highlight_class, list});
     }
+
+    // override adjust scroll to replace scroll_util logic with scrollIntoView
+    adjust_scroll = (li) => {
+        li[0].scrollIntoView(false);
+    };
 }

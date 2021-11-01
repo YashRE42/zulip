@@ -506,6 +506,63 @@ export function get_filtered_and_sorted_key_groups_and_titles(user_filter_text) 
     return key_groups_and_titles;
 }
 
+export function does_belong_to_users_or_others_section(user_id) {
+    if (compose_state.composing()) {
+        const stream_name = compose_state.stream_name();
+        if (stream_name) {
+            const is_subscriber = stream_data
+                .get_subscribed_streams_for_user(user_id)
+                .map((stream) => stream.name.toLowerCase())
+                .includes(stream_name.toLowerCase());
+            if (is_subscriber) {
+                return "users";
+            }
+            return "others";
+        }
+        const private_message_recipient = compose_state.private_message_recipient();
+        if (private_message_recipient) {
+            const is_recipient = private_message_recipient
+                .split(",")
+                .includes(people.get_by_user_id(user_id).email);
+            if (is_recipient) {
+                return "users";
+            }
+            return "others";
+        }
+        blueslip.error("compose_state composing but not stream or private_message");
+        return "users";
+    }
+
+    const filter = narrow_state.filter();
+    if (!filter) {
+        return "users";
+    }
+
+    // show separate lists for stream or topic narrows and pm thread narrow
+    if (narrow_state.stream()) {
+        const stream_name = narrow_state.stream_sub().name;
+        const is_subscriber = stream_data
+            .get_subscribed_streams_for_user(user_id)
+            .map((stream) => stream.name)
+            .includes(stream_name);
+        if (is_subscriber) {
+            return "users";
+        }
+        return "others";
+    } else if (filter.has_operator("pm-with")) {
+        const is_recipient = filter
+            .operands("pm-with")[0]
+            .split(",")
+            .includes(people.get_by_user_id(user_id).email);
+        if (is_recipient) {
+            return "users";
+        }
+        return "others";
+    }
+
+    return "users";
+}
+
 export function matches_filter(user_filter_text, user_id) {
     // This is a roundabout way of checking a user if you look
     // too hard at it, but it should be fine for now.

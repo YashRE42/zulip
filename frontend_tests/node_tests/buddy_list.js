@@ -25,19 +25,19 @@ set_global("localStorage", {
 
 const people = zrequire("people");
 const {BuddyList} = zrequire("buddy_list");
-function init_simulated_scrolling() {
-    const elem = {
-        dataset: {},
-        scrollTop: 0,
-        scrollHeight: 0,
-    };
+// function init_simulated_scrolling() {
+//     const elem = {
+//         dataset: {},
+//         scrollTop: 0,
+//         scrollHeight: 0,
+//     };
 
-    $.create("#buddy_list_wrapper", {children: [elem]});
+//     $.create("#buddy_list_wrapper", {children: [elem]});
 
-    $("#buddy_list_wrapper_padding").set_height(0);
+//     $("#buddy_list_wrapper_padding").set_height(0);
 
-    return elem;
-}
+//     return elem;
+// }
 
 const alice = {
     email: "alice@zulip.com",
@@ -71,7 +71,7 @@ run_test("get_items", () => {
 
 run_test("basics", ({override}) => {
     const buddy_list = new BuddyList();
-    init_simulated_scrolling();
+    // init_simulated_scrolling();
 
     override(buddy_list, "get_data_from_keys", () => "data-stub");
 
@@ -104,7 +104,7 @@ run_test("basics", ({override}) => {
         return alice_li;
     });
 
-    const li = buddy_list.find_user_li({
+    const li = buddy_list.find_li({
         key: alice.user_id,
     });
     assert.equal(li, alice_li);
@@ -132,10 +132,10 @@ run_test("basics", ({override}) => {
 //     });
 // });
 
-run_test("find_user_li w/force_render", ({override}) => {
+run_test("find_li w/force_render", ({override}) => {
     const buddy_list = new BuddyList();
 
-    // If we call find_user_li w/force_render set, and the
+    // If we call find_li w/force_render set, and the
     // key is not already rendered in DOM, then the
     // widget will call show_key to force-render it.
     const key = "999";
@@ -155,13 +155,13 @@ run_test("find_user_li w/force_render", ({override}) => {
     //     shown = true;
     // });
 
-    const empty_li = buddy_list.find_user_li({
+    const empty_li = buddy_list.find_li({
         key,
     });
     assert.equal(empty_li, stub_li);
     assert.ok(!shown);
 
-    const li = buddy_list.find_user_li({
+    const li = buddy_list.find_li({
         key,
         force_render: true,
     });
@@ -170,11 +170,11 @@ run_test("find_user_li w/force_render", ({override}) => {
     // assert.ok(shown);
 });
 
-run_test("find_user_li w/bad key", ({override}) => {
+run_test("find_li w/bad key", ({override}) => {
     const buddy_list = new BuddyList();
     override(buddy_list, "get_li_from_key", () => ({length: 0}));
 
-    const undefined_li = buddy_list.find_user_li({
+    const undefined_li = buddy_list.find_li({
         key: "not-there",
         force_render: true,
     });

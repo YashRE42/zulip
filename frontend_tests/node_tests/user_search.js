@@ -15,10 +15,10 @@ const _document = {
 
 const fake_buddy_list = {
     scroll_container_sel: "#whatever",
-    find_user_li: () => {},
-    first_user_key: () => {},
-    prev_user_key: () => {},
-    next_user_key: () => {},
+    find_li: () => {},
+    first_key: () => {},
+    prev_key: () => {},
+    next_key: () => {},
 };
 
 mock_esm("../../static/js/buddy_list", {

@@ -3,7 +3,7 @@ import $ from "jquery";
 import render_user_presence_row from "../templates/user_presence_row.hbs";
 import render_user_presence_rows from "../templates/user_presence_rows.hbs";
 
-// import * as blueslip from "./blueslip";
+import * as blueslip from "./blueslip";
 import * as buddy_data from "./buddy_data";
 import {$t} from "./i18n";
 // import * as message_viewport from "./message_viewport";
@@ -68,6 +68,9 @@ class BuddyListConf {
 
     get_data_from_keys(opts) {
         const keys = opts.keys;
+        // "users" in this line does not mean "users" like the rest of this file,
+        // it means users as in "person in buddy list" and includes what we call "others".
+        // todo: please rename.
         const data = buddy_data.get_items_for_users(keys);
         return data;
     }
@@ -189,28 +192,82 @@ export class BuddyList extends BuddyListConf {
         return obj.map((i, elem) => $(elem));
     }
 
-    first_user_key() {
-        return this.user_keys[0];
-    }
-
-    prev_user_key(key) {
-        const i = this.user_keys.indexOf(key);
-
-        if (i <= 0) {
-            return undefined;
+    first_key() {
+        if (!ls.get("users_title_collapsed")) {
+            return this.user_keys[0];
         }
-
-        return this.user_keys[i - 1];
+        if (!ls.get("others_title_collapsed")) {
+            return this.other_keys[0];
+        }
+        return undefined;
     }
 
-    next_user_key(key) {
-        const i = this.user_keys.indexOf(key);
+    prev_key(key) {
+        let i = this.other_keys.indexOf(key);
 
         if (i < 0) {
-            return undefined;
+            // if the key is not found in the other_keys,
+            // look through the user_keys
+            i = this.user_keys.indexOf(key);
+            if (i < 0) {
+                return undefined;
+            }
+            return this.user_keys[i - 1];
+        }
+
+        if (i === 0 && !ls.get("users_title_collapsed")) {
+            // if key happens to be the first element in other_keys,
+            // and the users section is not collapsed,
+            // return the last user_key, rather than undefined.
+            return this.user_keys[this.user_keys.length - 1];
+        }
+
+        return this.other_keys[i - 1];
+    }
+
+    next_key(key) {
+        let i = this.user_keys.indexOf(key);
+
+        if (i < 0) {
+            // if the key is not found in the user_keys,
+            // look through the other_keys
+            i = this.other_keys.indexOf(key);
+            if (i < 0) {
+                return undefined;
+            }
+            return this.other_keys[i + 1];
+        }
+
+        if (i === this.user_keys.length - 1 && !ls.get("others_title_collapsed")) {
+            // if key happens to be the last element in user_keys,
+            // and the others section is not collapsed,
+            // return the first other_key, rather than undefined.
+            return this.other_keys[0];
         }
 
         return this.user_keys[i + 1];
+    }
+
+    maybe_remove_key(opts) {
+        this.maybe_remove_user_key(opts);
+        this.maybe_remove_other_key(opts);
+
+        // if (pos < this.render_count) {
+        // this.render_count -= 1;
+        const li = this.find_li({key: opts.key});
+
+        // this conditional is a HACK which we need solely because of zjquery:
+        // (1) zjquery returns an array if we set the results of ".find()" to
+        // "false", arrays do not have ".remove()". Actual jquery returns a
+        // jquery element, which we could call ".remove()" on, which would
+        // just do nothing (which is correct).
+        // (2) zjquery doesn't support ".remove()" anyway.
+
+        if (li.length !== 0) {
+            li.remove();
+        }
+        // this.update_padding();
+        // }
     }
 
     maybe_remove_user_key(opts) {
@@ -221,13 +278,16 @@ export class BuddyList extends BuddyListConf {
         }
 
         this.user_keys.splice(pos, 1);
+    }
 
-        // if (pos < this.render_count) {
-        // this.render_count -= 1;
-        const li = this.find_user_li({key: opts.key});
-        li.remove();
-        // this.update_padding();
-        // }
+    maybe_remove_other_key(opts) {
+        const pos = this.other_keys.indexOf(opts.key);
+
+        if (pos < 0) {
+            return;
+        }
+
+        this.other_keys.splice(pos, 1);
     }
 
     find_user_position(opts) {
@@ -243,6 +303,20 @@ export class BuddyList extends BuddyListConf {
         }
 
         return this.user_keys.length;
+    }
+
+    find_other_position(opts) {
+        const key = opts.key;
+        let i;
+
+        for (i = 0; i < this.other_keys.length; i += 1) {
+            const list_key = this.other_keys[i];
+
+            if (this.compare_function(key, list_key) < 0) {
+                return i;
+            }
+        }
+        return this.other_keys.length;
     }
 
     // force_render(opts) {
@@ -261,7 +335,7 @@ export class BuddyList extends BuddyListConf {
     //     });
     // }
 
-    find_user_li(opts) {
+    find_li(opts) {
         const key = opts.key;
 
         // Try direct DOM lookup first for speed.
@@ -306,7 +380,7 @@ export class BuddyList extends BuddyListConf {
         if (new_key === undefined) {
             //     if (pos === this.render_count) {
             //         this.render_count += 1;
-            this.container.append(html);
+            this.users_section.append(html);
             // this.update_padding();
             //     }
             return;
@@ -314,17 +388,57 @@ export class BuddyList extends BuddyListConf {
 
         // if (pos < this.render_count) {
         //     this.render_count += 1;
-        const li = this.find_user_li({key: new_key});
+        const li = this.find_li({key: new_key});
         li.before(html);
         // this.update_padding();
         // }
     }
 
-    insert_or_move_user(opts) {
+    insert_new_html_for_other(opts) {
+        const new_key = opts.new_key;
+        const html = opts.html;
+        // const pos = opts.pos;
+
+        if (new_key === undefined) {
+            //     if (pos === this.render_count) {
+            //         this.render_count += 1;
+            this.others_section.append(html);
+            // this.update_padding();
+            //     }
+            return;
+        }
+
+        // if (pos < this.render_count) {
+        //     this.render_count += 1;
+        const li = this.find_li({key: new_key});
+        li.before(html);
+        // this.update_padding();
+        // }
+    }
+
+    insert_or_move(opts) {
+        // move is just remove then insert
+        this.maybe_remove_key({key: opts.key});
+        this.insert_user_or_other(opts);
+    }
+
+    insert_user_or_other(opts) {
+        const section = buddy_data.does_belong_to_users_or_others_section(opts.key);
+        switch (section) {
+            case "users":
+                this.insert_user(opts);
+                break;
+            case "others":
+                this.insert_other(opts);
+                break;
+            default:
+                blueslip.error("asked to insert but user does not belong inside either section.");
+        }
+    }
+
+    insert_user(opts) {
         const key = opts.key;
         const item = opts.item;
-
-        this.maybe_remove_user_key({key});
 
         const pos = this.find_user_position({
             key,
@@ -339,6 +453,29 @@ export class BuddyList extends BuddyListConf {
 
         const html = this.item_to_html({item});
         this.insert_new_html_for_user({
+            pos,
+            html,
+            new_key,
+        });
+    }
+
+    insert_other(opts) {
+        const key = opts.key;
+        const item = opts.item;
+
+        const pos = this.find_other_position({
+            key,
+        });
+
+        // Order is important here--get the new_key
+        // before mutating our list.  An undefined value
+        // corresponds to appending.
+        const new_key = this.other_keys[pos];
+
+        this.other_keys.splice(pos, 0, key);
+
+        const html = this.item_to_html({item});
+        this.insert_new_html_for_other({
             pos,
             html,
             new_key,
@@ -372,6 +509,9 @@ export class BuddyList extends BuddyListConf {
     // This is a bit of a hack to make sure we at least have
     // an empty list to start, before we get the initial payload.
     container = $(this.container_sel);
+    users_section = $("#users");
+
+    others_section = $("#others");
 
     // start_scroll_handler() {
     //     // We have our caller explicitly call this to make
