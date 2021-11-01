@@ -444,7 +444,7 @@ test("user_last_seen_time_status", ({override, override_rewire}) => {
     assert.equal(buddy_data.user_last_seen_time_status(selma.user_id), "translated: Idle");
 });
 
-test("get_items_for_users", ({override_rewire}) => {
+test("get_items_for_people", ({override_rewire}) => {
     people.add_active_user(alice);
     people.add_active_user(fred);
     user_status.set_away(alice.user_id);
@@ -456,8 +456,8 @@ test("get_items_for_users", ({override_rewire}) => {
     };
     override_rewire(user_status, "get_status_emoji", () => status_emoji_info);
 
-    const user_ids = [me.user_id, alice.user_id, fred.user_id];
-    assert.deepEqual(buddy_data.get_items_for_users(user_ids), [
+    const ids = [me.user_id, alice.user_id, fred.user_id];
+    assert.deepEqual(buddy_data.get_items_for_people(ids), [
         {
             href: "#narrow/pm-with/1001-self",
             is_current_user: true,
