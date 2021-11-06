@@ -847,6 +847,13 @@ exports.fixtures = {
         value: false,
     },
 
+    user_settings__realm_icon_as_favicon: {
+        type: "user_settings",
+        op: "update",
+        property: "realm_icon_as_favicon",
+        value: true,
+    },
+
     user_settings__starred_message_counts: {
         type: "user_settings",
         op: "update",

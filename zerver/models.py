@@ -1414,6 +1414,7 @@ class UserBaseSettings(models.Model):
     dense_mode: bool = models.BooleanField(default=True)
     fluid_layout_width: bool = models.BooleanField(default=False)
     high_contrast_mode: bool = models.BooleanField(default=False)
+    realm_icon_as_favicon: bool = models.BooleanField(default=False)
     translate_emoticons: bool = models.BooleanField(default=False)
     twenty_four_hour_time: bool = models.BooleanField(default=False)
     starred_message_counts: bool = models.BooleanField(default=True)
@@ -1552,6 +1553,7 @@ class UserBaseSettings(models.Model):
         **dict(
             # Add new general settings here.
             escape_navigates_to_default_view=bool,
+            realm_icon_as_favicon=bool,
             send_private_typing_notifications=bool,
             send_read_receipts=bool,
             send_stream_typing_notifications=bool,
