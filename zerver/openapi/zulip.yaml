@@ -7602,6 +7602,16 @@ paths:
           schema:
             type: boolean
           example: true
+        - name: realm_icon_as_favicon
+          in: query
+          description: |
+            Whether the organization profile picture is used to render the favicon instead of the Zulip logo.
+            [Organization profile picture as favicon](/help/organization-profile-picture-as-favicon).
+
+            **Changes**: New in Zulip 5.0 (feature level 112).
+          schema:
+            type: boolean
+          example: true
         - name: emojiset
           in: query
           description: |
@@ -9457,6 +9467,13 @@ paths:
                               Whether the users list on left sidebar in narrow windows.
 
                               This feature is not heavily used and is likely to be reworked.
+                          realm_icon_as_favicon:
+                            type: boolean
+                            description: |
+                              Whether the organization profile picture is used to render the favicon instead of the Zulip logo.
+                              [Organization picture as favicon](/help/organization-profile-picture-as-favicon).
+
+                              **Changes**: New in Zulip 5.0 (feature level 112).
                           emojiset:
                             type: string
                             description: |
@@ -11180,6 +11197,13 @@ paths:
                               Whether the users list on left sidebar in narrow windows.
 
                               This feature is not heavily used and is likely to be reworked.
+                          realm_icon_as_favicon:
+                            type: boolean
+                            description: |
+                              Whether the organization profile picture is used to render the favicon instead of the Zulip logo.
+                              [Organization picture as favicon](/help/organization-profile-picture-as-favicon).
+
+                              **Changes**: New in Zulip 5.0 (feature level 112).
                           emojiset:
                             type: string
                             description: |
@@ -12130,6 +12154,16 @@ paths:
 
             **Changes**: Before Zulip 5.0 (feature level 80), this setting was managed by
             the `PATCH /settings/display` endpoint.
+          schema:
+            type: boolean
+          example: true
+        - name: realm_icon_as_favicon
+          in: query
+          description: |
+            Whether the organization profile picture is used to render the favicon instead of the Zulip logo.
+            [Organization picture as favicon](/help/organization-profile-picture-as-favicon).
+
+            **Changes**: New in Zulip 5.0 (feature level 112).
           schema:
             type: boolean
           example: true

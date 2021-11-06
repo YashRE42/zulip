@@ -88,6 +88,7 @@ export const get_all_display_settings = (): DisplaySettings => ({
             "high_contrast_mode",
             "left_side_userlist",
             "fluid_layout_width",
+            "realm_icon_as_favicon",
             "starred_message_counts",
         ],
     },
@@ -484,6 +485,9 @@ export const display_settings_labels = {
     high_contrast_mode: $t({defaultMessage: "High contrast mode"}),
     left_side_userlist: $t({
         defaultMessage: "Show user list on left sidebar in narrow windows",
+    }),
+    realm_icon_as_favicon: $t({
+        defaultMessage: "Use organization profile picture as browser tab favicon",
     }),
     starred_message_counts: $t({defaultMessage: "Show counts for starred messages"}),
     twenty_four_hour_time: $t({defaultMessage: "Time format"}),

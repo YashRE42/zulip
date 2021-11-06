@@ -20,6 +20,13 @@ format used by the Zulip server that they are interacting with.
 
 ## Changes in Zulip 5.0
 
+**Feature level 112**
+
+* [`POST /register`](/api/register-queue), [`PATCH /settings`](/api/update-settings),
+  [`PATCH /realm/user_settings_defaults`](/api/update-realm-user-settings-defaults):
+  Added user setting `realm_icon_as_favicon` to enable using the
+  [organization profile picture as browser favicon](/help/organization-profile-picture-as-favicon).
+
 **Feature level 111**
 
 * [`POST /subscriptions/properties`](/api/update-subscription-settings):
