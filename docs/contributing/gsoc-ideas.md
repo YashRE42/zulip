@@ -87,12 +87,10 @@ trouble, please speak up in
 ## Application tips, and how to be a strong candidate
 
 You'll be following
-[GSoC's application process instructions](https://developers.google.com/open-source/gsoc/). And
-we'll be asking you to make at least one successful pull request
+[GSoC's application process instructions](https://developers.google.com/open-source/gsoc/), and making at least one successful pull request
 before the application deadline, to help us assess you as a developer.
-Students who we accept generally have 5 or more pull requests merged
-or nearly merged (usually including at least a couple that are
-significant, e.g. having 100+ lines of changes or that shows you have
+Students who we accept generally have five or more merged, or nearly merged, pull requests (usually including at least a couple which are
+significant, e.g. having 100+ lines of changes or show you have
 done significant debugging).
 
 Getting started earlier is better, so you have more time to learn,
@@ -100,9 +98,8 @@ make contributions, and make a good proposal.
 
 Your application should include the following:
 
-- Details on any experience you have related to the technologies that
-  Zulip has, or related to our product approach.
-- Links to materials to help us evaluate your level of experience and
+- Details on any experience you have related to the technologies used by Zulip, or related to our product approach.
+- Links to materials which help us evaluate your level of experience and
   how you work, such as personal projects of yours, including any
   existing open source or open culture contributions you've made and
   any bug reports you've submitted to open source projects.
@@ -125,43 +122,36 @@ contributions throughout the application process, including after the
 application deadline.
 
 We are more interested in candidates if we see them submitting good
-contributions to Zulip projects, helping other applicants on GitHub
+contributions to Zulip projects, helping other applicants on [GitHub](https://github.com/zulip/zulip)
 and on
-[chat.zulip.org](https://zulip.com/developer-community/),
+[chat.zulip.org](https://chat.zulip.org)(CZO),
 learning from our suggestions,
 [trying to solve their own obstacles and then asking well-formed
-questions](https://blogs.akamai.com/2013/10/you-must-try-and-then-you-must-ask.html),
-and developing and sharing project ideas and project proposals that
+questions](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/),
+and developing and sharing project ideas and project proposals which
 are plausible and useful.
 
-Also, you're going to find that people give you links to pages that
-answer your questions. Here's how that often works:
+Also, you're going to find people will give you links to pages which
+answer your questions. Here's how this often works:
 
-1. you [try to solve your problem until you get stuck, including
+1. You [try to solve your problem until you get stuck, including
    looking through our code and our documentation, then start formulating
    your request for
-   help](https://blogs.akamai.com/2013/10/you-must-try-and-then-you-must-ask.html)
-1. you ask your question
-1. someone directs you to a document
-1. you go read that document, and try to use it to answer your question
-1. you find you are confused about a new thing
-1. you ask another question
-1. now that you have demonstrated that you have the ability to read,
-   think, and learn new things, someone has a longer talk with you to
-   answer your new specific question
-1. you and the other person collaborate to improve the document that you
-   read in step 3 :-)
+   help](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/).
+1. You ask your question.
+1. Someone directs you to a document.
+1. You go read the document to find the answer to your question.
+1. You find you are confused about a new thing.
+1. You ask another question.
+1. Having demonstrated your the ability to read,
+   think, and learn new things, someone will have a longer talk with you to
+   answer your new, specific question.
+1. You and the other person collaborate to improve the document you
+   read in step 3. :-)
 
-This helps us make a balance between person-to-person discussion and
-documentation that everyone can read, so we save time answering common
-questions but also get everyone the personal help they need. This will
-help you understand the rhythm of help we provide in the developers'
-Zulip livechat -- including why we prefer to give you help in public
-mailing lists and Zulip streams, instead of in one-on-one private
-messages or email. We prefer to hear from you and respond to you in
-public places so more people have a chance to answer the question, and
-to see and benefit from the answer. [More about that in this blog
-post.](https://www.harihareswara.net/sumana/2016/10/12/0)
+This helps us balance between person-to-person discussion and
+documentation everyone can read. It saves time answering common
+questions, while still providing everyone the personal help they need. Becoming familiar and comfortable with this rhythm will be helpful to you as you interact with other developers on [CZO](https://chat.zulip.org). It is always better (and Zulip’s strong preference) to ask questions and have conversation through a public stream rather than a private message or an email. This benefits you by giving you faster response times and the benefit of many minds, as well as benefiting the community as other people learn from you. Read more about this workflow in this wonderful blog [post].(https://www.harihareswara.net/sumana/2016/10/12/0)
 
 ## Mentors
 
