@@ -657,9 +657,11 @@ export function hide() {
     // before it completely re-rerenders.
     message_view_header.render_title_area();
 
-    // Fixes misaligned message_view and hidden
-    // floating_recipient_bar.
-    navbar_alerts.resize_app();
+    window.requestAnimationFrame(() => {
+        // Fixes misaligned message_view and hidden
+        // floating_recipient_bar.
+        navbar_alerts.resize_app();
+    });
 
     // This makes sure user lands on the selected message
     // and not always at the top of the narrow.
