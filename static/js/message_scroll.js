@@ -70,7 +70,9 @@ export function show_history_limit_notice() {
 }
 
 export function hide_history_limit_notice() {
-    $(".top-messages-logo").show();
+    window.requestAnimationFrame(() => {
+        $(".top-messages-logo").show();
+    });
     $(".history-limited-box").hide();
 }
 
