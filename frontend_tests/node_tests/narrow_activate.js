@@ -133,7 +133,12 @@ function stub_message_list() {
     };
 }
 
-run_test("basics", () => {
+run_test("basics", ({override}) => {
+    let rAF_called = false;
+    override(window, "requestAnimationFrame", (callback) => {
+        rAF_called = true;
+        callback();
+    });
     stub_message_list();
 
     const helper = test_helper();
@@ -208,14 +213,17 @@ run_test("basics", () => {
         [typing_events, "render_notifications_for_narrow"],
         [message_view_header, "initialize"],
     ]);
+    assert.ok(rAF_called);
 
     message_lists.current.selected_id = () => -1;
     message_lists.current.get_row = () => row;
     util.sorted_ids = () => [];
 
+    rAF_called = false;
     narrow.activate([{operator: "is", operand: "private"}], {
         then_select_id: selected_id,
     });
+    assert.ok(rAF_called);
 
     assert.equal(narrow_state.narrowed_to_pms(), true);
 

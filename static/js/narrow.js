@@ -265,8 +265,10 @@ export function activate(raw_operators, opts) {
 
     const excludes_muted_topics = narrow_state.excludes_muted_topics();
 
-    // Save how far from the pointer the top of the message list was.
-    save_pre_narrow_offset_for_reload();
+    window.requestAnimationFrame(() => {
+        // Save how far from the pointer the top of the message list was.
+        save_pre_narrow_offset_for_reload();
+    });
 
     let msg_data = new MessageListData({
         filter: narrow_state.filter(),
