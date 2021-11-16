@@ -87,18 +87,19 @@ trouble, please speak up in
 ## Application tips, and how to be a strong candidate
 
 You'll be following
-[GSoC's application process instructions](https://developers.google.com/open-source/gsoc/), and making at least one successful pull request
-before the application deadline, to help us assess you as a developer.
-Students who we accept generally have five or more merged, or nearly merged, pull requests (usually including at least a couple which are
-significant, e.g. having 100+ lines of changes or show you have
-done significant debugging).
+[GSoC's application process instructions](https://developers.google.com/open-source/gsoc/),  
+and making at least one successful pull request before the application deadline, to help us  
+assess you as a developer. Students who we accept generally have five or more merged,  
+or nearly merged, pull requests (usually including at least a couple which are
+significant, e.g. having 100+ lines of changes or show you have done significant debugging).
 
 Getting started earlier is better, so you have more time to learn,
 make contributions, and make a good proposal.
 
 Your application should include the following:
 
-- Details on any experience you have related to the technologies used by Zulip, or related to our product approach.
+- Details on any experience you have related to the technologies used by Zulip,  
+  or related to our product approach.
 - Links to materials which help us evaluate your level of experience and
   how you work, such as personal projects of yours, including any
   existing open source or open culture contributions you've made and
@@ -123,16 +124,37 @@ application deadline.
 
 We are more interested in candidates if we see them submitting good
 contributions to Zulip projects, helping other applicants on [GitHub](https://github.com/zulip/zulip)
-and on
-[chat.zulip.org](https://chat.zulip.org)(CZO),
-learning from our suggestions,
-[trying to solve their own obstacles and then asking well-formed
-questions](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/),
+and on [chat.zulip.org](https://chat.zulip.org)(CZO),
+learning from our suggestions, [trying to solve their own obstacles and
+then asking well-formed questions](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/),
 and developing and sharing project ideas and project proposals which
 are plausible and useful.
 
-Also, you're going to find people will give you links to pages which
-answer your questions. Here's how this often works:
+## Questions are Important
+
+A successful GSoC revolves around asking well-formed questions.  
+A well-formed question helps you learn, respects the person answering, and reduces  
+the time commitment and frustration level of everyone involved. Asking the right  
+question, to the right person, in the right way, at the right time, is a skill  
+which requires a lifetime of fine-tuning, but Zulip makes this a little bit easier  
+by providing a general structure for asking questions in the Zulip community.
+
+This structure maintain balance between stream discussion and documentation. It saves time  
+answering common questions, while still providing everyone the personal help  
+they need. Becoming familiar and comfortable with this rhythm will be helpful to  
+you as you interact with other developers on [CZO](https://chat.zulip.org).  
+It is always better (and Zulip’s strong preference) to ask questions and  
+have conversation through a public stream rather than a private message or an email.  
+This benefits you by giving you faster response times and the benefit of many minds,  
+as well as benefiting the community as other people learn from you.
+
+- Stick to the [community norms](https://zulip.com/developer-community/).
+- Read these two blog posts
+  - [Try, then ask](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/)
+  - [We aren’t just making code, we’re making history](https://www.harihareswara.net/sumana/2016/10/12/0)
+- Understand [what makes a great Zulip contributor](..#what-makes-a-great-zulip-contributor)
+
+This is a typical question/response sequence:
 
 1. You [try to solve your problem until you get stuck, including
    looking through our code and our documentation, then start formulating
@@ -148,10 +170,6 @@ answer your questions. Here's how this often works:
    answer your new, specific question.
 1. You and the other person collaborate to improve the document you
    read in step 3. :-)
-
-This helps us balance between person-to-person discussion and
-documentation everyone can read. It saves time answering common
-questions, while still providing everyone the personal help they need. Becoming familiar and comfortable with this rhythm will be helpful to you as you interact with other developers on [CZO](https://chat.zulip.org). It is always better (and Zulip’s strong preference) to ask questions and have conversation through a public stream rather than a private message or an email. This benefits you by giving you faster response times and the benefit of many minds, as well as benefiting the community as other people learn from you. Read more about this workflow in this wonderful blog [post].(https://www.harihareswara.net/sumana/2016/10/12/0)
 
 ## Mentors
 
