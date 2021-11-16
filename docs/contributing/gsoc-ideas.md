@@ -133,32 +133,36 @@ are plausible and useful.
 ## Questions are Important
 
 A successful GSoC revolves around asking well-formed questions.  
-A well-formed question helps you learn, respects the person answering, and reduces  
-the time commitment and frustration level of everyone involved. Asking the right  
-question, to the right person, in the right way, at the right time, is a skill  
-which requires a lifetime of fine-tuning, but Zulip makes this a little bit easier  
-by providing a general structure for asking questions in the Zulip community.
+A well-formed question helps you learn, respects the person answering,  
+and reduces the time commitment and frustration level of everyone  
+involved. Asking the right question, to the right person, in the right  
+way, at the right time, is a skill which requires a lifetime of  
+fine-tuning, but Zulip makes this a little bit easier by providing a  
+general structure for asking questions in the Zulip community.
 
-This structure maintain balance between stream discussion and documentation. It saves time  
-answering common questions, while still providing everyone the personal help  
-they need. Becoming familiar and comfortable with this rhythm will be helpful to  
-you as you interact with other developers on [CZO](https://chat.zulip.org).  
-It is always better (and Zulip’s strong preference) to ask questions and  
-have conversation through a public stream rather than a private message or an email.  
-This benefits you by giving you faster response times and the benefit of many minds,  
-as well as benefiting the community as other people learn from you.
+This structure maintain balance between stream discussion and  
+documentation. It saves time answering common questions, while  
+still providing everyone the personal help they need. Becoming familiar  
+and comfortable with this rhythm will be helpful to you as you interact  
+with other developers on [CZO](https://chat.zulip.org). It is always  
+better (and Zulip’s strong preference) to ask questions and have
+conversation through a public stream rather than a private message or  
+an email. This benefits you by giving you faster response times and  
+the benefit of many minds, as well as benefiting the community as others  
+learn from you.
 
 - Stick to the [community norms](https://zulip.com/developer-community/).
-- Read these two blog posts
+- Read these three blog posts
   - [Try, then ask](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/)
   - [We aren’t just making code, we’re making history](https://www.harihareswara.net/sumana/2016/10/12/0)
-- Understand [what makes a great Zulip contributor](..#what-makes-a-great-zulip-contributor)
+  - [How to ask Good Questions](https://jvns.ca/blog/good-questions/)
+- Understand [what makes a great Zulip contributor](../overview/contributing.html#what-makes-a-great-zulip-contributor)
 
 This is a typical question/response sequence:
 
 1. You [try to solve your problem until you get stuck, including
-   looking through our code and our documentation, then start formulating
-   your request for
+   looking through our code and our documentation, then start  
+   formulating your request for
    help](https://www.mattringel.com/2013/09/30/you-must-try-and-then-you-must-ask/).
 1. You ask your question.
 1. Someone directs you to a document.
@@ -166,8 +170,8 @@ This is a typical question/response sequence:
 1. You find you are confused about a new thing.
 1. You ask another question.
 1. Having demonstrated your the ability to read,
-   think, and learn new things, someone will have a longer talk with you to
-   answer your new, specific question.
+   think, and learn new things, someone will have a longer talk with  
+   you to answer your new, specific question.
 1. You and the other person collaborate to improve the document you
    read in step 3. :-)
 
