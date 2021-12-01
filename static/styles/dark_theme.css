@@ -496,7 +496,7 @@ body.dark-theme {
     .clear_search_button:disabled:hover,
     #user-groups .save-instructions,
     .close,
-    #user_presences li:hover .user-list-sidebar-menu-icon,
+    #user_presences .presence_row:hover .user-list-sidebar-menu-icon,
     li.top_left_all_messages:hover .all-messages-sidebar-menu-icon,
     li.top_left_starred_messages:hover .starred-messages-sidebar-menu-icon,
     #stream_filters li:hover .stream-sidebar-menu-icon,
@@ -512,7 +512,7 @@ body.dark-theme {
         color: hsl(0, 0%, 100%);
     }
 
-    #user_presences li .user-list-sidebar-menu-icon:hover,
+    #user_presences .presence_row .user-list-sidebar-menu-icon:hover,
     .all-messages-sidebar-menu-icon:hover,
     .starred-messages-sidebar-menu-icon:hover,
     .stream-sidebar-menu-icon:hover,
@@ -552,8 +552,8 @@ body.dark-theme {
         }
     }
 
-    #user_presences li:hover,
-    #user_presences li.highlighted_user {
+    #user_presences .presence_row:hover,
+    #user_presences .presence_row.highlighted_user {
         background-color: hsla(136, 25%, 73%, 0.2);
     }
 

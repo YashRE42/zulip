@@ -62,15 +62,15 @@ export function set_new_user_input(value) {
     new_user_input = value;
 }
 
-function get_pm_list_item(user_id) {
-    return buddy_list.find_li({
+function get_pm_row(user_id) {
+    return buddy_list.find_row({
         key: user_id,
     });
 }
 
 function set_pm_count(user_ids_string, count) {
-    const pm_li = get_pm_list_item(user_ids_string);
-    ui_util.update_unread_count_in_dom(pm_li, count);
+    const pm_row = get_pm_row(user_ids_string);
+    ui_util.update_unread_count_in_dom(pm_row, count);
 }
 
 export function update_dom_with_unread_counts(counts) {
@@ -295,7 +295,7 @@ export function reset_users() {
 }
 
 export function narrow_for_user(opts) {
-    const user_id = buddy_list.get_key_from_li({li: opts.li});
+    const user_id = buddy_list.get_key_from_row({row: opts.row});
     return narrow_for_user_id({user_id});
 }
 
@@ -318,6 +318,7 @@ function keydown_enter_key() {
 }
 
 export function set_cursor_and_filter() {
+    buddy_list.find_li = buddy_list.find_row;
     user_cursor = new ListCursor({
         list: buddy_list,
         highlight_class: "highlighted_user",

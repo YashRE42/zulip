@@ -39,18 +39,18 @@ people.add_active_user(alice);
 run_test("get_items", () => {
     const buddy_list = new BuddyList();
 
-    // We don't make alice_li an actual jQuery stub,
+    // We don't make alice_rowan actual jQuery stub,
     // because our test only cares that it comes
     // back from get_items.
-    const alice_li = "alice stub";
-    const sel = "li.user_sidebar_entry";
+    const alice_row = "alice stub";
+    const sel = ".presence_row.user_sidebar_entry";
     const container = $.create("get_items container", {
-        children: [{to_$: () => alice_li}],
+        children: [{to_$: () => alice_row}],
     });
     buddy_list.container.set_find_results(sel, container);
 
     const items = buddy_list.get_items();
-    assert.deepEqual(items, [alice_li]);
+    assert.deepEqual(items, [alice_row]);
 });
 
 run_test("basics", ({override}) => {
@@ -83,19 +83,19 @@ run_test("basics", ({override}) => {
     });
     assert.ok(appended);
 
-    const alice_li = {length: 1};
+    const alice_row = {length: 1};
 
-    override(buddy_list, "get_li_from_key", (opts) => {
+    override(buddy_list, "get_row_from_key", (opts) => {
         const key = opts.key;
 
         assert.equal(key, alice.user_id);
-        return alice_li;
+        return alice_row;
     });
 
-    const li = buddy_list.find_li({
+    const row = buddy_list.find_row({
         key: alice.user_id,
     });
-    assert.equal(li, alice_li);
+    assert.equal(row, alice_row);
 });
 
 run_test("big_list", ({override}) => {
@@ -156,18 +156,18 @@ run_test("force_render", ({override}) => {
     });
 });
 
-run_test("find_li w/force_render", ({override}) => {
+run_test("find_row w/force_render", ({override}) => {
     const buddy_list = new BuddyList();
 
-    // If we call find_li w/force_render set, and the
+    // If we call find_row w/force_render set, and the
     // key is not already rendered in DOM, then the
     // widget will call show_key to force-render it.
     const key = "999";
-    const stub_li = {length: 0};
+    const stub_row = {length: 0};
 
-    override(buddy_list, "get_li_from_key", (opts) => {
+    override(buddy_list, "get_row_from_key", (opts) => {
         assert.equal(opts.key, key);
-        return stub_li;
+        return stub_row;
     });
 
     buddy_list.user_keys = ["foo", "bar", key, "baz"];
@@ -179,31 +179,31 @@ run_test("find_li w/force_render", ({override}) => {
         shown = true;
     });
 
-    const empty_li = buddy_list.find_li({
+    const empty_row = buddy_list.find_row({
         key,
     });
-    assert.equal(empty_li, stub_li);
+    assert.equal(empty_row, stub_row);
     assert.ok(!shown);
 
-    const li = buddy_list.find_li({
+    const row = buddy_list.find_row({
         key,
         force_render: true,
     });
 
-    assert.equal(li, stub_li);
+    assert.equal(row, stub_row);
     assert.ok(shown);
 });
 
-run_test("find_li w/bad key", ({override}) => {
+run_test("find_row w/bad key", ({override}) => {
     const buddy_list = new BuddyList();
-    override(buddy_list, "get_li_from_key", () => ({length: 0}));
+    override(buddy_list, "get_row_from_key", () => ({length: 0}));
 
-    const undefined_li = buddy_list.find_li({
+    const undefined_row = buddy_list.find_row({
         key: "not-there",
         force_render: true,
     });
 
-    assert.deepEqual(undefined_li, []);
+    assert.deepEqual(undefined_row, []);
 });
 
 run_test("scrolling", ({override}) => {

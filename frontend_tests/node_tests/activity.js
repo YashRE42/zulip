@@ -248,21 +248,21 @@ function buddy_list_add(user_id, stub) {
         stub.attr("data-user-id", user_id);
     }
     stub.length = 1;
-    const sel = `li.user_sidebar_entry[data-user-id='${CSS.escape(user_id)}']`;
+    const sel = `.presence_row.user_sidebar_entry[data-user-id='${CSS.escape(user_id)}']`;
     $("#user_presences").set_find_results(sel, stub);
 }
 
 test("PM_update_dom_counts", () => {
     const count = $.create("alice-unread-count");
     const pm_key = alice.user_id.toString();
-    const li = $.create("alice stub");
-    buddy_list_add(pm_key, li);
-    li.set_find_results(".unread_count", count);
-    count.set_parents_result("li", li);
+    const presence_row = $.create("alice stub");
+    buddy_list_add(pm_key, presence_row);
+    presence_row.set_find_results(".unread_count", count);
+    count.set_parents_result(".presence_row", presence_row);
 
     const counts = new Map();
     counts.set(pm_key, 5);
-    li.addClass("user_sidebar_entry");
+    presence_row.addClass("user_sidebar_entry");
 
     activity.update_dom_with_unread_counts({pm_count: counts});
     assert.equal(count.text(), "5");
@@ -290,9 +290,9 @@ test("handlers", ({override, override_rewire, mock_template}) => {
 
     // This is kind of weak coverage; we are mostly making sure that
     // keys and clicks got mapped to functions that don't crash.
-    let me_li;
-    let alice_li;
-    let fred_li;
+    let me_row;
+    let alice_row;
+    let fred_row;
 
     let narrowed;
 
@@ -308,13 +308,13 @@ test("handlers", ({override, override_rewire, mock_template}) => {
         });
         activity.set_cursor_and_filter();
 
-        me_li = $.create("me stub");
-        alice_li = $.create("alice stub");
-        fred_li = $.create("fred stub");
+        me_row = $.create("me stub");
+        alice_row = $.create("alice stub");
+        fred_row = $.create("fred stub");
 
-        buddy_list_add(me.user_id, me_li);
-        buddy_list_add(alice.user_id, alice_li);
-        buddy_list_add(fred.user_id, fred_li);
+        buddy_list_add(me.user_id, me_row);
+        buddy_list_add(alice.user_id, alice_row);
+        buddy_list_add(fred.user_id, fred_row);
     }
 
     (function test_filter_keys() {
@@ -365,7 +365,7 @@ test("handlers", ({override, override_rewire, mock_template}) => {
         // We wire up the click handler in click_handlers.js,
         // so this just tests the called function.
         narrowed = false;
-        activity.narrow_for_user({li: alice_li});
+        activity.narrow_for_user({row: alice_row});
         assert.ok(narrowed);
     })();
 
@@ -448,7 +448,7 @@ test("insert_one_user_into_empty_list", ({override, mock_template}) => {
             user_circle_status: "translated: Active",
             status_emoji_info: undefined,
         });
-        assert.ok(html.startsWith("<li data-user-id="));
+        assert.ok(html.startsWith("<div data-user-id="));
         return html;
     });
 
@@ -577,8 +577,8 @@ test("update_presence_info", ({override, override_rewire}) => {
 
     override_rewire(buddy_data, "matches_filter", () => true);
 
-    const alice_li = $.create("alice stub");
-    buddy_list_add(alice.user_id, alice_li);
+    const alice_row = $.create("alice stub");
+    buddy_list_add(alice.user_id, alice_row);
 
     let inserted;
     override(buddy_list, "insert_or_move", () => {

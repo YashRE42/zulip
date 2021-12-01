@@ -512,9 +512,9 @@ export function initialize() {
     $("#user_presences")
         .expectOne()
         .on("click", ".selectable_sidebar_block", (e) => {
-            const li = $(e.target).parents("li");
+            const row = $(e.target).parents(".presence_row");
 
-            activity.narrow_for_user({li});
+            activity.narrow_for_user({row});
 
             e.preventDefault();
             e.stopPropagation();
@@ -545,13 +545,17 @@ export function initialize() {
                 observer.disconnect();
             },
             onShow: (instance) => {
-                // For both buddy list and top left corner pm list, `target_node`
-                // is their parent `ul` element. We cannot use MutationObserver
-                // directly on the reference element because it will be removed
-                // and we need to attach it on an element which will remain in the
-                // DOM which is their parent `ul`.
-                const target_node = $(instance.reference).parents("ul").get(0);
-                // We only need to know if any of the `li` elements were removed.
+                // For buddy list `target_node` is the parent `#user_presences` element,
+                // and for the top left corner pm list `target_node` is the parent `ul`.
+                //
+                // We cannot use MutationObserver directly on the reference element
+                // because it will be removed and we need to attach it on an element
+                // which will remain in the DOM, which is the appropriate parent element.
+                let target_node = $(instance.reference).parents("#user_presences").get(0);
+                if (!target_node) {
+                    target_node = $(instance.reference).parents("ul").get(0);
+                }
+                // We only need to know if any of the `.presence_row` elements were removed.
                 const config = {attributes: false, childList: true, subtree: false};
                 const callback = function (mutationsList) {
                     for (const mutation of mutationsList) {

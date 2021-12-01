@@ -12,7 +12,7 @@ import * as ui from "./ui";
 class BuddyListConf {
     container_sel = "#user_presences";
     scroll_container_sel = "#buddy_list_wrapper";
-    item_sel = "li.user_sidebar_entry";
+    item_sel = ".presence_row.user_sidebar_entry";
     padding_sel = "#buddy_list_wrapper_padding";
 
     items_to_html(opts) {
@@ -25,14 +25,14 @@ class BuddyListConf {
         return html;
     }
 
-    get_li_from_key(opts) {
+    get_row_from_key(opts) {
         const user_id = opts.key;
         const container = $(this.container_sel);
         return container.find(`${this.item_sel}[data-user-id='${CSS.escape(user_id)}']`);
     }
 
-    get_key_from_li(opts) {
-        return Number.parseInt(opts.li.expectOne().attr("data-user-id"), 10);
+    get_key_from_row(opts) {
+        return Number.parseInt(opts.row.expectOne().attr("data-user-id"), 10);
     }
 
     get_data_from_keys(opts) {
@@ -140,8 +140,8 @@ export class BuddyList extends BuddyListConf {
 
         if (pos < this.users_render_count) {
             this.users_render_count -= 1;
-            const li = this.find_li({key: opts.key});
-            li.remove();
+            const row = this.find_row({key: opts.key});
+            row.remove();
             this.update_padding();
         }
     }
@@ -177,22 +177,22 @@ export class BuddyList extends BuddyListConf {
         });
     }
 
-    find_li(opts) {
+    find_row(opts) {
         const key = opts.key;
 
         // Try direct DOM lookup first for speed.
-        let li = this.get_li_from_key({
+        let row = this.get_row_from_key({
             key,
         });
 
-        if (li.length === 1) {
-            return li;
+        if (row.length === 1) {
+            return row;
         }
 
         if (!opts.force_render) {
             // Most callers don't force us to render a list
             // item that wouldn't be on-screen anyway.
-            return li;
+            return row;
         }
 
         const pos = this.user_keys.indexOf(key);
@@ -207,11 +207,11 @@ export class BuddyList extends BuddyListConf {
             pos,
         });
 
-        li = this.get_li_from_key({
+        row = this.get_row_from_key({
             key,
         });
 
-        return li;
+        return row;
     }
 
     insert_new_html(opts) {
@@ -230,8 +230,8 @@ export class BuddyList extends BuddyListConf {
 
         if (pos < this.users_render_count) {
             this.users_render_count += 1;
-            const li = this.find_li({key: new_key});
-            li.before(html);
+            const row = this.find_row({key: new_key});
+            row.before(html);
             this.update_padding();
         }
     }

@@ -15,7 +15,7 @@ const _document = {
 
 const fake_buddy_list = {
     scroll_container_sel: "#whatever",
-    find_li: () => {},
+    find_row: () => {},
     first_key: () => {},
     prev_key: () => {},
     next_key: () => {},

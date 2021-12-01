@@ -1028,7 +1028,7 @@ export function register_click_handlers() {
 
         // use email of currently selected user, rather than some elem comparison,
         // as the presence list may be redrawn with new elements.
-        const target = $(this).closest("li");
+        const target = $(this).closest(".presence_row");
         const user_id = elem_to_user_id(target.find("a"));
 
         if (current_user_sidebar_user_id === user_id) {
