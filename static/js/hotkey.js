@@ -158,6 +158,10 @@ const keypress_mappings = {
 };
 
 export function get_keydown_hotkey(e) {
+    if (e.which === 144) {
+        return {name: "custom"};
+    }
+
     if (e.altKey) {
         return undefined;
     }
@@ -544,6 +548,8 @@ export function process_hotkey(e, hotkey) {
 
     // This block needs to be before the `Tab` handler.
     switch (event_name) {
+        case "custom":
+            return activity.redraw();
         case "up_arrow":
         case "down_arrow":
         case "left_arrow":
