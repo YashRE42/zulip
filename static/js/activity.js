@@ -129,13 +129,14 @@ export function build_user_sidebar() {
 
     const filter_text = get_filter_text();
 
-    const key_groups = {user_keys: buddy_data.get_filtered_and_sorted_user_ids(filter_text)};
+    const key_groups_and_titles =
+        buddy_data.get_filtered_and_sorted_key_groups_and_titles(filter_text);
 
     blueslip.measure_time("buddy_list.populate", () => {
-        buddy_list.populate(key_groups);
+        buddy_list.populate(key_groups_and_titles);
     });
 
-    return key_groups; // for testing
+    return key_groups_and_titles; // for testing
 }
 
 function do_update_users_for_search() {
@@ -284,7 +285,14 @@ export function on_revoke_away(user_id) {
 
 export function redraw() {
     build_user_sidebar();
-    user_cursor.redraw();
+    // todo: figure out how to avoid.
+    // this is a hack to make sure nothing breaks if we call redraw
+    // before complete init, if we investigate our calls to redraw
+    // we should be able to get rid of this conditional
+    // (run puppeteer test realm-creation to verify nothing breaks)
+    if (user_cursor) {
+        user_cursor.redraw();
+    }
     pm_list.update_private_messages();
 }
 
