@@ -85,11 +85,14 @@ export class BuddyList extends BuddyListConf {
             keys: more_keys,
         });
 
-        const html = this.items_to_html({
-            items,
-        });
+        const $html = $(
+            this.items_to_html({
+                items,
+            }),
+        );
         this.container = $(this.container_sel);
-        this.container.append(html);
+        this.bind_handlers($html);
+        this.container.append($html);
 
         // Invariant: more_keys.length >= items.length.
         // (Usually they're the same, but occasionally keys
@@ -99,6 +102,13 @@ export class BuddyList extends BuddyListConf {
 
         this.render_count += more_keys.length;
         this.update_padding();
+    }
+
+    bind_handlers($html) {
+        const $elems = $html.filter("li.user_sidebar_entry");
+        for (const elem of $elems) {
+            ui.bind_handlers_for_status_emoji(elem);
+        }
     }
 
     get_items() {
@@ -217,13 +227,14 @@ export class BuddyList extends BuddyListConf {
 
     insert_new_html(opts) {
         const other_key = opts.other_key;
-        const html = opts.html;
+        const $html = $(opts.html);
+        this.bind_handlers($html);
         const pos = opts.pos;
 
         if (other_key === undefined) {
             if (pos === this.render_count) {
                 this.render_count += 1;
-                this.container.append(html);
+                this.container.append($html);
                 this.update_padding();
             }
             return;
@@ -232,7 +243,7 @@ export class BuddyList extends BuddyListConf {
         if (pos < this.render_count) {
             this.render_count += 1;
             const li = this.find_li({key: other_key});
-            li.before(html);
+            li.before($html);
             this.update_padding();
         }
     }

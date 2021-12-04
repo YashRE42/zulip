@@ -166,16 +166,6 @@ function initialize_right_sidebar() {
             $(".right-sidebar .realm-description .rendered_markdown"),
         );
     }
-
-    $("#user_presences").on("mouseenter", ".user_sidebar_entry", (e) => {
-        const status_emoji = $(e.target).closest(".user_sidebar_entry").find("img.status_emoji");
-        emoji.animate(status_emoji);
-    });
-
-    $("#user_presences").on("mouseleave", ".user_sidebar_entry", (e) => {
-        const status_emoji = $(e.target).closest(".user_sidebar_entry").find("img.status_emoji");
-        emoji.stop_animation(status_emoji);
-    });
 }
 
 function initialize_navbar() {
