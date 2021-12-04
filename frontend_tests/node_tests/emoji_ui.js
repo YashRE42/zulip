@@ -18,13 +18,8 @@ run_test("animate_and_stop_animation", () => {
     test_emoji.attr("src", "initial_src/url");
     test_emoji.attr("data-still-url", fake_still_url);
     test_emoji.attr("data-animated-url", fake_animated_url);
-    const fake_container = $.create("fake container");
-    fake_container.set_find_results("img.status_emoji[data-still-url]", test_emoji);
-    const fake_target = $.create("fake target");
-    fake_target.closest = () => fake_container;
-    const fake_event = {target: fake_target};
-    emoji_ui.handle_mouseenter_for_status_emoji(fake_event);
+    emoji_ui.animate(test_emoji);
     assert.equal(test_emoji.attr("src"), escaped_fake_animated_url);
-    emoji_ui.handle_mouseleave_for_status_emoji(fake_event);
+    emoji_ui.stop_animation(test_emoji);
     assert.equal(test_emoji.attr("src"), escaped_fake_still_url);
 });
