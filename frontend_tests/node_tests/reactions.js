@@ -7,7 +7,7 @@ const {make_stub} = require("../zjsunit/stub");
 const {run_test} = require("../zjsunit/test");
 const blueslip = require("../zjsunit/zblueslip");
 const $ = require("../zjsunit/zjquery");
-const {page_params} = require("../zjsunit/zpage_params");
+const {page_params, user_settings} = require("../zjsunit/zpage_params");
 
 const alice_user_id = 5;
 
@@ -65,6 +65,7 @@ const emoji_codes = zrequire("../generated/emoji/emoji_codes.json");
 const emoji = zrequire("../shared/js/emoji");
 const people = zrequire("people");
 const reactions = zrequire("reactions");
+const settings_config = zrequire("settings_config");
 
 const emoji_params = {
     realm_emoji: {
@@ -114,6 +115,8 @@ people.add_active_user(alexus);
 
 function test(label, f) {
     run_test(label, ({override, override_rewire, mock_template}) => {
+        user_settings.emoji_animation_config =
+            settings_config.emoji_animation_config_values.always.code;
         page_params.user_id = alice_user_id;
         f({override, override_rewire, mock_template});
     });
@@ -614,6 +617,21 @@ test("view.insert_new_reaction (me w/unicode emoji)", ({override_rewire, mock_te
     mock_template("message_reaction.hbs", false, (data) => {
         assert.deepEqual(data, {
             count: 1,
+            emoji_animation_config: 3,
+            emoji_animation_config_values: {
+                always: {
+                    code: 3,
+                    description: "translated: Animate in continuous loop (inefficient)",
+                },
+                never: {
+                    code: 1,
+                    description: "translated: Never animate",
+                },
+                on_hover: {
+                    code: 2,
+                    description: "translated: Only animate on hover",
+                },
+            },
             emoji_alt_code: false,
             emoji_name: "8ball",
             emoji_code: "1f3b1",
@@ -663,6 +681,21 @@ test("view.insert_new_reaction (them w/zulip emoji)", ({override_rewire, mock_te
             count: 1,
             url: "/static/generated/emoji/images/emoji/unicode/zulip.png",
             is_realm_emoji: true,
+            emoji_animation_config: 3,
+            emoji_animation_config_values: {
+                always: {
+                    code: 3,
+                    description: "translated: Animate in continuous loop (inefficient)",
+                },
+                never: {
+                    code: 1,
+                    description: "translated: Never animate",
+                },
+                on_hover: {
+                    code: 2,
+                    description: "translated: Only animate on hover",
+                },
+            },
             emoji_alt_code: false,
             emoji_name: "zulip",
             emoji_code: "zulip",

@@ -73,6 +73,7 @@ import * as search_pill_widget from "./search_pill_widget";
 import * as sent_messages from "./sent_messages";
 import * as server_events from "./server_events";
 import * as settings from "./settings";
+import * as settings_config from "./settings_config";
 import * as settings_data from "./settings_data";
 import * as settings_display from "./settings_display";
 import * as settings_notifications from "./settings_notifications";
@@ -111,12 +112,22 @@ import * as user_status_ui from "./user_status_ui";
    things jumping around slightly when the email address is shown. */
 
 let current_message_hover;
-function message_unhover() {
+function message_unhover(message_row) {
     if (current_message_hover === undefined) {
         return;
     }
     current_message_hover.find("span.edit_content").html("");
     current_message_hover = undefined;
+    if (
+        message_row &&
+        user_settings.emoji_animation_config ===
+            settings_config.emoji_animation_config_values.on_hover.code
+    ) {
+        const animatable_reaction_emoji = message_row.find(
+            ".message_reaction img.emoji[data-still-url]",
+        );
+        emoji.stop_animation(animatable_reaction_emoji);
+    }
 }
 
 function message_hover(message_row) {
@@ -126,8 +137,22 @@ function message_hover(message_row) {
     }
 
     const message = message_lists.current.get(rows.id(message_row));
+    // we're using a little trick here:
+    // if we don't pass a message_row we won't try to stop_animation on
+    // animate-able emoji (if any), which is good because what we want to
+    // do is to animate them, ie, we save an unnecessary dom operation.
     message_unhover();
     current_message_hover = message_row;
+
+    if (
+        user_settings.emoji_animation_config ===
+        settings_config.emoji_animation_config_values.on_hover.code
+    ) {
+        const animatable_reaction_emoji = message_row.find(
+            ".message_reaction img.emoji[data-still-url]",
+        );
+        emoji.animate(animatable_reaction_emoji);
+    }
 
     // Locally echoed messages have !is_topic_editable and thus go
     // through this code path.
@@ -281,8 +306,9 @@ export function initialize_kitchen_sink_stuff() {
         message_hover(row);
     });
 
-    $("#main_div").on("mouseleave", ".message_table .message_row", () => {
-        message_unhover();
+    $("#main_div").on("mouseleave", ".message_table .message_row", function () {
+        const row = $(this).closest(".message_row");
+        message_unhover(row);
     });
 
     $("#main_div").on("mouseover", ".sender_info_hover", function () {

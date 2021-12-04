@@ -662,14 +662,16 @@ export class MessageListView {
         const message_groups = opts.message_groups;
         const use_match_properties = opts.use_match_properties;
         const table_name = opts.table_name;
+        const emoji_animation_config = user_settings.emoji_animation_config;
+        const emoji_animation_config_values = settings_config.emoji_animation_config_values;
 
         return $(
             render_message_group({
                 message_groups,
                 use_match_properties,
                 table_name,
-                emoji_animation_config: user_settings.emoji_animation_config,
-                emoji_animation_config_values: settings_config.emoji_animation_config_values,
+                emoji_animation_config,
+                emoji_animation_config_values,
             }),
         );
     }
