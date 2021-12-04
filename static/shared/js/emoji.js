@@ -278,3 +278,21 @@ export function get_canonical_name(emoji_name) {
 export function get_emoticon_translations() {
     return emoticon_translations;
 }
+
+export function stop_animation($emoji) {
+    if ($emoji.length) {
+        const still_url = $emoji.data("still-url");
+        if (still_url) {
+            $emoji.attr("src", still_url);
+        }
+    }
+}
+
+export function animate($emoji) {
+    if ($emoji.length) {
+        const animated_url = $emoji.data("animated-url");
+        if (animated_url) {
+            $emoji.attr("src", animated_url);
+        }
+    }
+}

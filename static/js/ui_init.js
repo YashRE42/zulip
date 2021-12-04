@@ -169,22 +169,12 @@ function initialize_right_sidebar() {
 
     $("#user_presences").on("mouseenter", ".user_sidebar_entry", (e) => {
         const status_emoji = $(e.target).closest(".user_sidebar_entry").find("img.status_emoji");
-        if (status_emoji.length) {
-            const animated_url = status_emoji.data("animated-url");
-            if (animated_url) {
-                status_emoji.attr("src", animated_url);
-            }
-        }
+        emoji.animate(status_emoji);
     });
 
     $("#user_presences").on("mouseleave", ".user_sidebar_entry", (e) => {
         const status_emoji = $(e.target).closest(".user_sidebar_entry").find("img.status_emoji");
-        if (status_emoji.length) {
-            const still_url = status_emoji.data("still-url");
-            if (still_url) {
-                status_emoji.attr("src", still_url);
-            }
-        }
+        emoji.stop_animation(status_emoji);
     });
 }
 

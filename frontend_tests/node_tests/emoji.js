@@ -123,3 +123,31 @@ run_test("get_emoji_details_by_name", () => {
         },
     );
 });
+
+run_test("animate_and_stop_animation", () => {
+    function data_func(data_attr) {
+        switch (data_attr) {
+            case "still-url":
+                return this.still_url;
+            case "animated-url":
+                return this.animated_url;
+            default:
+                return undefined;
+        }
+    }
+    function attr_func(attr, value) {
+        this[attr] = value;
+    }
+    const test_emoji = {
+        length: 1,
+        src: "initial_src",
+        attr: attr_func,
+        still_url: "fake_still_url",
+        animated_url: "fake_animated_url",
+        data: data_func,
+    };
+    emoji.animate(test_emoji);
+    assert.equal(test_emoji.src, test_emoji.animated_url);
+    emoji.stop_animation(test_emoji);
+    assert.equal(test_emoji.src, test_emoji.still_url);
+});
