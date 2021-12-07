@@ -342,26 +342,6 @@ export function filter_by_prefix_match_at_word_boundaries(items, search_term, it
     return filtered_items;
 }
 
-export function filter_by_word_prefix_match(items, search_term, item_to_text) {
-    if (search_term === "") {
-        return items;
-    }
-
-    let search_terms = search_term.toLowerCase().split(",");
-    search_terms = search_terms.map((s) => s.trim());
-
-    const filtered_items = items.filter((item) =>
-        search_terms.some((search_term) => {
-            const lower_name = item_to_text(item).toLowerCase();
-            const cands = lower_name.split(" ");
-            cands.push(lower_name);
-            return cands.some((name) => name.startsWith(search_term));
-        }),
-    );
-
-    return filtered_items;
-}
-
 export function get_time_from_date_muted(date_muted) {
     if (date_muted === undefined) {
         return Date.now();
