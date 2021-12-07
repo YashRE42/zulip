@@ -319,6 +319,28 @@ export function clean_user_content_links(html) {
     }
     return content.innerHTML;
 }
+export function filter_by_prefix_match_at_word_boundaries(items, search_term, item_to_text) {
+    if (search_term === "") {
+        return items;
+    }
+    let search_terms = search_term.toLowerCase().split(",");
+    search_terms = search_terms.map((s) => s.trim());
+
+    // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+    function escape_RegExp(string) {
+        return string.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&"); // $& means the whole matched string
+    }
+
+    const filtered_items = items.filter((item) =>
+        search_terms.some((search_term) => {
+            const lower_name = item_to_text(item).toLowerCase();
+            const re = new RegExp("\\b" + escape_RegExp(search_term));
+            return re.test(lower_name);
+        }),
+    );
+
+    return filtered_items;
+}
 
 export function filter_by_word_prefix_match(items, search_term, item_to_text) {
     if (search_term === "") {
