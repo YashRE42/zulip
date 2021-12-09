@@ -60,6 +60,21 @@ export const color_scheme_values = {
     },
 };
 
+export const emoji_animation_config_values = {
+    never: {
+        code: 1,
+        description: $t({defaultMessage: "Never animate"}),
+    },
+    on_hover: {
+        code: 2,
+        description: $t({defaultMessage: "Only animate on hover"}),
+    },
+    always: {
+        code: 3,
+        description: $t({defaultMessage: "Animate in continuous loop (inefficient)"}),
+    },
+};
+
 export const twenty_four_hour_time_values = {
     twenty_four_hour_clock: {
         value: true,
@@ -485,6 +500,7 @@ export const display_settings_labels = {
     left_side_userlist: $t({
         defaultMessage: "Show user list on left sidebar in narrow windows",
     }),
+    emoji_animation_config: $t({defaultMessage: "Play animated emoji in messages"}),
     starred_message_counts: $t({defaultMessage: "Show counts for starred messages"}),
     twenty_four_hour_time: $t({defaultMessage: "Time format"}),
     translate_emoticons: new Handlebars.SafeString(

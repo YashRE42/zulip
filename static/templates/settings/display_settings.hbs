@@ -73,6 +73,10 @@
           label=settings_label.translate_emoticons
           prefix=prefix}}
 
+        <label for="emoji_animation_config" class="dropdown-title">{{t "Emoji animation" }}</label>
+        <select name="emoji_animation_config" class="setting_emoji_animation_config prop-element" data-setting-widget-type="number">
+            {{> dropdown_options_widget option_values=emoji_animation_config_values}}
+        </select>
     </div>
 
     <div class="advanced-settings {{#if for_realm_settings}}org-subsection-parent{{else}}subsection-parent{{/if}}">

@@ -163,6 +163,7 @@ if FAKE_LDAP_MODE:
 
 THUMBNAIL_IMAGES = True
 
+EMOJI_ANIMATION_CONFIG = os.getenv("emoji_animation_config", "always")
 SEARCH_PILLS_ENABLED = bool(os.getenv("SEARCH_PILLS_ENABLED", False))
 
 BILLING_ENABLED = True

@@ -847,6 +847,13 @@ exports.fixtures = {
         value: false,
     },
 
+    user_settings__emoji_animation_config: {
+        type: "user_settings",
+        op: "update",
+        property: "emoji_animation_config",
+        value: 2,
+    },
+
     user_settings__starred_message_counts: {
         type: "user_settings",
         op: "update",

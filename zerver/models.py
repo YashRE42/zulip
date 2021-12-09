@@ -1417,6 +1417,17 @@ class UserBaseSettings(models.Model):
     translate_emoticons: bool = models.BooleanField(default=False)
     twenty_four_hour_time: bool = models.BooleanField(default=False)
     starred_message_counts: bool = models.BooleanField(default=True)
+    EMOJI_ANIMATION_CONFIG_NEVER = 1
+    EMOJI_ANIMATION_CONFIG_ON_HOVER = 2
+    EMOJI_ANIMATION_CONFIG_ALWAYS = 3
+    EMOJI_ANIMATION_CONFIG_CHOICES = [
+        EMOJI_ANIMATION_CONFIG_NEVER,
+        EMOJI_ANIMATION_CONFIG_ON_HOVER,
+        EMOJI_ANIMATION_CONFIG_ALWAYS,
+    ]
+    emoji_animation_config: int = models.PositiveSmallIntegerField(
+        default=EMOJI_ANIMATION_CONFIG_ON_HOVER
+    )
     COLOR_SCHEME_AUTOMATIC = 1
     COLOR_SCHEME_NIGHT = 2
     COLOR_SCHEME_LIGHT = 3
@@ -1552,6 +1563,7 @@ class UserBaseSettings(models.Model):
         **dict(
             # Add new general settings here.
             escape_navigates_to_default_view=bool,
+            emoji_animation_config=int,
             send_private_typing_notifications=bool,
             send_read_receipts=bool,
             send_stream_typing_notifications=bool,

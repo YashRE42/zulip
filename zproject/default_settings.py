@@ -176,6 +176,9 @@ USING_TORNADO = True
 # ToS/Privacy templates
 POLICIES_DIRECTORY: str = "zerver/policies_absent"
 
+# temporary place for config, until a setting is added
+EMOJI_ANIMATION_CONFIG = "always"
+
 # Security
 ENABLE_FILE_LINKS = False
 ENABLE_GRAVATAR = True
