@@ -36,6 +36,7 @@ export type UserSettings = (StreamNotificationSettings & PmNotificationSettings)
     notification_sound: string;
     pm_content_in_desktop_notifications: boolean;
     presence_enabled: boolean;
+    emoji_animation_config: number;
     realm_name_in_notifications: boolean;
     starred_message_counts: boolean;
     translate_emoticons: boolean;
