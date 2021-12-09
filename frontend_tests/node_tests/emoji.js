@@ -123,3 +123,66 @@ run_test("get_emoji_details_by_name", () => {
         },
     );
 });
+
+run_test("get_emoji_details_for_rendering_error", () => {
+    // Test no params.
+    let opts = {};
+
+    assert.throws(
+        () => {
+            emoji.get_emoji_details_for_rendering(opts);
+        },
+        {
+            name: "Error",
+            message: "Invalid params.",
+        },
+    );
+
+    // Test no name.
+    opts = {
+        emoji_code: "fake_code",
+        reaction_type: "fake_reaction_type",
+    };
+
+    assert.throws(
+        () => {
+            emoji.get_emoji_details_for_rendering(opts);
+        },
+        {
+            name: "Error",
+            message: "Invalid params.",
+        },
+    );
+
+    // Test no emoji code.
+    opts = {
+        emoji_name: "fake_name",
+        reaction_type: "fake_reaction_type",
+    };
+
+    assert.throws(
+        () => {
+            emoji.get_emoji_details_for_rendering(opts);
+        },
+        {
+            name: "Error",
+            message: "Invalid params.",
+        },
+    );
+
+    // Test no reaction_type.
+    opts = {
+        emoji_name: "fake_name",
+        emoji_code: "fake_code",
+    };
+
+    assert.throws(
+        () => {
+            emoji.get_emoji_details_for_rendering(opts);
+        },
+        {
+            name: "Error",
+            message: "Invalid params.",
+        },
+    );
+});
