@@ -7715,6 +7715,20 @@ paths:
           schema:
             type: boolean
           example: true
+        - name: emoji_animation_config
+          in: query
+          description: |
+            Whether emoji animations play continuously, or only on hover, or don't play at all.
+            [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+
+            - 1 - Never
+            - 2 - On hover
+            - 3 - Always
+
+            **Changes**: New in Zulip 5.0 (feature level 119).
+          schema:
+            type: integer
+          example: 2
         - name: emojiset
           in: query
           description: |
@@ -9610,6 +9624,17 @@ paths:
                               Whether the users list on left sidebar in narrow windows.
 
                               This feature is not heavily used and is likely to be reworked.
+                          emoji_animation_config:
+                            type: integer
+                            description: |
+                              Whether emoji animations play continuously, or only on hover, or don't play at all.
+                              [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+
+                              - 1 - Never
+                              - 2 - On hover
+                              - 3 - Always
+
+                              **Changes**: New in Zulip 5.0 (feature level 119).
                           emojiset:
                             type: string
                             description: |
@@ -11333,6 +11358,17 @@ paths:
                               Whether the users list on left sidebar in narrow windows.
 
                               This feature is not heavily used and is likely to be reworked.
+                          emoji_animation_config:
+                            type: integer
+                            description: |
+                              Whether emoji animations play continuously, or only on hover, or don't play at all.
+                              [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+
+                              - 1 - Never
+                              - 2 - On hover
+                              - 3 - Always
+
+                              **Changes**: New in Zulip 5.0 (feature level 119).
                           emojiset:
                             type: string
                             description: |
@@ -12299,6 +12335,20 @@ paths:
           schema:
             type: boolean
           example: true
+        - name: emoji_animation_config
+          in: query
+          description: |
+            Whether emoji animations play continuously, or only on hover, or don't play at all.
+            [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+
+            - 1 - Never
+            - 2 - On hover
+            - 3 - Always
+
+            **Changes**: New in Zulip 5.0 (feature level 119).
+          schema:
+            type: integer
+          example: 2
         - name: emojiset
           in: query
           description: |

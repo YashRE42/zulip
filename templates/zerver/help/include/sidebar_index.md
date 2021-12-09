@@ -52,6 +52,7 @@
 * [Configure default view](/help/configure-default-view)
 * [Enable full width display](/help/enable-full-width-display)
 * [Display the buddy list on narrow screens](/help/move-the-users-list-to-the-left-sidebar)
+* [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation)
 * [Manage your uploaded files](/help/manage-your-uploaded-files)
 
 ## Sending messages

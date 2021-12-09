@@ -6,6 +6,7 @@ export type RealmDefaultSettingsType = {
     demote_inactive_streams: number;
     dense_mode: boolean;
     email_notifications_batching_period_seconds: number;
+    emoji_animation_config: number;
     emojiset: string;
     enable_desktop_notifications: boolean;
     enable_digest_emails: boolean;
