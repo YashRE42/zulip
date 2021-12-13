@@ -830,6 +830,27 @@ test("missing unicode emojis", ({override_rewire}) => {
     assert.equal(message.content, "<p>\u{1F6B2}</p>");
 });
 
+test("get_emoji_details_by_name exception handling", ({override_rewire}) => {
+    override_rewire(emoji, "get_emoji_details_by_name", (emoji_name) => {
+        throw new Error("Bad emoji name: " + emoji_name);
+    });
+    const test_emoji_name = "unknown_emoji";
+    const message = {raw_content: ":" + test_emoji_name + ":"};
+    blueslip.expect("info", "Using alt code for unknown emoji: " + test_emoji_name);
+    markdown.apply_markdown(message);
+    override_rewire(emoji, "get_emoji_details_by_name", () => {
+        throw new Error("some other error");
+    });
+    try {
+        markdown.apply_markdown(message);
+    } catch (error) {
+        assert.equal(
+            error.message,
+            "some other error\nPlease report this to https://github.com/chjj/marked.",
+        );
+    }
+});
+
 test("katex_throws_unexpected_exceptions", () => {
     blueslip.expect("error", "Error: some-exception");
     const message = {raw_content: "$$a$$"};
