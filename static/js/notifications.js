@@ -123,8 +123,8 @@ export function permission_state() {
     return NotificationAPI.permission;
 }
 
-let unread_count = 0;
-let pm_count = 0;
+let unread_count;
+let pm_count;
 
 export function redraw_title() {
     // Update window title to reflect unread messages in current view
@@ -140,7 +140,12 @@ export function redraw_title() {
 }
 
 export function update_unread_counts(new_unread_count, new_pm_count) {
-    if (new_unread_count === unread_count && new_pm_count === pm_count) {
+    if (
+        unread_count &&
+        pm_count &&
+        new_unread_count === unread_count &&
+        new_pm_count === pm_count
+    ) {
         return;
     }
 

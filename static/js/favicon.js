@@ -27,6 +27,14 @@ function set_favicon() {
     $("#favicon").attr("href", favicon_state.url);
 }
 
+export function update_alternate_icon() {
+    if (user_settings.realm_icon_as_favicon && page_params.realm_icon_url) {
+        $("#alternate_icon").attr("href", page_params.realm_icon_url);
+    } else {
+        $("#alternate_icon").attr("href", "/static/images/favicon.png?v=4");
+    }
+}
+
 export async function update_favicon(new_message_count, pm_count) {
     try {
         if (favicon_state !== undefined) {

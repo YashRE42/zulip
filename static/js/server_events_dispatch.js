@@ -15,6 +15,7 @@ import * as compose_pm_pill from "./compose_pm_pill";
 import * as composebox_typeahead from "./composebox_typeahead";
 import * as dark_theme from "./dark_theme";
 import * as emoji_picker from "./emoji_picker";
+import * as favicon from "./favicon";
 import * as giphy from "./giphy";
 import * as hotspots from "./hotspots";
 import * as linkifiers from "./linkifiers";
@@ -286,6 +287,7 @@ export function dispatch_normal_event(event) {
                             // because favicon.js does not keep track of unreads,
                             // once they have been rendered.
                             notifications.redraw_favicon();
+                            favicon.update_alternate_icon();
                             break;
                         case "logo":
                             page_params.realm_logo_url = event.data.logo_url;
@@ -644,6 +646,7 @@ export function dispatch_normal_event(event) {
             }
             if (event.property === "realm_icon_as_favicon") {
                 notifications.redraw_favicon();
+                favicon.update_alternate_icon();
             }
             if (event.property === "color_scheme") {
                 $("body").fadeOut(300);
