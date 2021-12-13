@@ -6,6 +6,7 @@ const markdown_test_cases = require("../../zerver/tests/fixtures/markdown_test_c
 const markdown_assert = require("../zjsunit/markdown_assert");
 const {set_global, zrequire} = require("../zjsunit/namespace");
 const {run_test} = require("../zjsunit/test");
+const blueslip = require("../zjsunit/zblueslip");
 const {page_params, user_settings} = require("../zjsunit/zpage_params");
 
 const example_realm_linkifiers = [
@@ -839,6 +840,29 @@ test("missing unicode emojis", ({override}) => {
     markdown.initialize(markdown_config.get_helpers());
     markdown.apply_markdown(message);
     assert.equal(message.content, "<p>\u{1F6B2}</p>");
+});
+
+test("get_emoji_details_by_name exception handling", ({override_rewire}) => {
+    override_rewire(emoji, "get_emoji_details_by_name", (emoji_name) => {
+        throw new Error("Bad emoji name: " + emoji_name);
+    });
+    const test_emoji_name = "unknown_emoji";
+    const message = {raw_content: ":" + test_emoji_name + ":"};
+    blueslip.expect("info", "Using alt code for unknown emoji: " + test_emoji_name);
+    markdown.initialize(markdown_config.get_helpers());
+    markdown.apply_markdown(message);
+    override_rewire(emoji, "get_emoji_details_by_name", () => {
+        throw new Error("some other error");
+    });
+    try {
+        markdown.initialize(markdown_config.get_helpers());
+        markdown.apply_markdown(message);
+    } catch (error) {
+        assert.equal(
+            error.message,
+            "some other error\nPlease report this to https://zulip.com/development-community/",
+        );
+    }
 });
 
 test("katex_throws_unexpected_exceptions", ({override_rewire}) => {
