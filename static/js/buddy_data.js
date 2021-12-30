@@ -24,7 +24,7 @@ import * as util from "./util";
 
 */
 
-export const max_size_before_shrinking = 600;
+export const max_size_before_shrinking = 200;
 
 export function get_user_circle_class(user_id) {
     const status = buddy_status(user_id);
