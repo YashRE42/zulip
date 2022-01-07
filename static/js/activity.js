@@ -283,7 +283,18 @@ export function on_revoke_away(user_id) {
     pm_list.update_private_messages();
 }
 
+let saved_scrollTop = 0;
+function save_sidebar_scroll() {
+    saved_scrollTop = $("#user_presence").scrollTop;
+}
+
+function load_sidebar_scroll() {
+    $("#user_presence").scrollTop = saved_scrollTop;
+    saved_scrollTop = 0;
+}
+
 export function redraw() {
+    save_sidebar_scroll();
     build_user_sidebar();
     // todo: figure out how to avoid.
     // this is a hack to make sure nothing breaks if we call redraw
@@ -294,6 +305,7 @@ export function redraw() {
         user_cursor.redraw();
     }
     pm_list.update_private_messages();
+    load_sidebar_scroll();
 }
 
 export function reset_users() {
