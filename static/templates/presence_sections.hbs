@@ -7,10 +7,14 @@
     </h5>
     <div class="collapse {{#unless users_title_collapsed}} in {{/unless}}" id="users">
     </div>
+    <div id="extra_users" class="hidden">
+    </div>
 </div>
 {{else}}
 {{! "all users" presence rows }}
 <div id="users">
+</div>
+<div id="extra_users" class="hidden">
 </div>
 {{/if}}
 
@@ -22,6 +26,8 @@
         <i class="fa fa-chevron-down" aria-hidden="true"></i> {{ others_title }} {{ others_count }}
     </h5>
     <div class="collapse {{#unless others_title_collapsed}} in {{/unless}}" id="others">
+    </div>
+    <div id="extra_others" class="hidden">
     </div>
 </div>
 {{/if}}
