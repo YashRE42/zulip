@@ -216,6 +216,45 @@ export function update_bot_permissions_ui() {
     }
 }
 
+// exported for testing
+export function setup_zuliprc_clipboard() {
+    new ClipboardJS("#copy_zuliprc", {
+        text(trigger) {
+            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
+            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
+            const bot = bot_data.get(bot_id);
+            const data = generate_zuliprc_content(bot);
+            return data;
+        },
+    });
+}
+
+// exported for testing
+export function setup_email_clipboard() {
+    new ClipboardJS("#copy_bot_email", {
+        text(trigger) {
+            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
+            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
+            const bot = bot_data.get(bot_id);
+            const email = bot.email;
+            return email;
+        },
+    });
+}
+
+// exported for testing
+export function setup_api_clipboard() {
+    new ClipboardJS("#copy_api_key", {
+        text(trigger) {
+            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
+            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
+            const bot = bot_data.get(bot_id);
+            const api_key = bot.api_key;
+            return api_key;
+        },
+    });
+}
+
 export function set_up() {
     $("#payload_url_inputbox").hide();
     $("#create_payload_url").val("");
@@ -541,37 +580,14 @@ export function set_up() {
         $(this).attr("href", generate_zuliprc_uri(bot_id));
     });
 
-    new ClipboardJS("#copy_zuliprc", {
-        text(trigger) {
-            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
-            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
-            const bot = bot_data.get(bot_id);
-            const data = generate_zuliprc_content(bot);
-            return data;
-        },
-    });
+    // to copy bot zuliprc
+    setup_zuliprc_clipboard();
 
     // to copy bot email
-    new ClipboardJS("#copy_bot_email", {
-        text(trigger) {
-            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
-            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
-            const bot = bot_data.get(bot_id);
-            const email = bot.email;
-            return email;
-        },
-    });
+    setup_email_clipboard();
 
     // to copy bot API key
-    new ClipboardJS("#copy_api_key", {
-        text(trigger) {
-            const bot_info = $(trigger).closest(".bot-information-box").find(".bot_info");
-            const bot_id = Number.parseInt(bot_info.attr("data-user-id"), 10);
-            const bot = bot_data.get(bot_id);
-            const api_key = bot.api_key;
-            return api_key;
-        },
-    });
+    setup_api_clipboard();
 
     $("#bots_lists_navbar .add-a-new-bot-tab").on("click", (e) => {
         e.preventDefault();

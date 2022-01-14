@@ -21,13 +21,35 @@ const bot_data_params = {
 
 const avatar = mock_esm("../../static/js/avatar");
 
-function ClipboardJS() {}
-mock_cjs("clipboard", ClipboardJS);
+let clipboard_args;
+
+class Clipboard {
+    constructor(...args) {
+        clipboard_args = args;
+    }
+}
+
+mock_cjs("clipboard", Clipboard);
+
+// based on assert_clipboard_setup in node_tests/rendered_markdown.js
+function assert_clipboard_setup(sel) {
+    assert.equal(clipboard_args[0], sel);
+    // todo: test clipboard_args[1]
+}
 
 const bot_data = zrequire("bot_data");
 const settings_bots = zrequire("settings_bots");
 
 bot_data.initialize(bot_data_params);
+
+run_test("test_clipboard_setup", () => {
+    settings_bots.setup_zuliprc_clipboard();
+    assert_clipboard_setup("#copy_zuliprc");
+    settings_bots.setup_email_clipboard();
+    assert_clipboard_setup("#copy_bot_email");
+    settings_bots.setup_api_clipboard();
+    assert_clipboard_setup("#copy_api_key");
+});
 
 function test(label, f) {
     run_test(label, ({override}) => {
@@ -131,6 +153,9 @@ test("test tab clicks", ({override}) => {
 
     override(avatar, "build_bot_create_widget", () => {});
 
+    override(settings_bots, "setup_zuliprc_clipboard", () => {});
+    override(settings_bots, "setup_email_clipboard", () => {});
+    override(settings_bots, "setup_api_clipboard", () => {});
     settings_bots.set_up();
 
     test_create_bot_type_input_box_toggle(() => $("#create_bot_type").trigger("change"));
