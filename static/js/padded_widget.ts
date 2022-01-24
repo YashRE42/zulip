@@ -6,6 +6,7 @@ export function update_padding(opts: {
     total_rows: number;
     shown_rows: number;
 }): void {
+    console.log(opts);
     const content = $(opts.content_sel);
     const padding = $(opts.padding_sel);
     const total_rows = opts.total_rows;

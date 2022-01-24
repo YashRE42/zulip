@@ -23,6 +23,7 @@ import * as people from "./people";
 import * as pm_list from "./pm_list";
 import * as popovers from "./popovers";
 import * as presence from "./presence";
+import {get_scroll_element} from "./ui";
 import * as ui_util from "./ui_util";
 import {UserSearch} from "./user_search";
 import * as user_status from "./user_status";
@@ -132,9 +133,11 @@ export function build_user_sidebar() {
     const key_groups_and_titles =
         buddy_data.get_filtered_and_sorted_key_groups_and_titles(filter_text);
 
+    save_sidebar_scroll();
     blueslip.measure_time("buddy_list.populate", () => {
         buddy_list.populate(key_groups_and_titles);
     });
+    load_sidebar_scroll();
 
     return key_groups_and_titles; // for testing
 }
@@ -285,16 +288,17 @@ export function on_revoke_away(user_id) {
 
 let saved_scrollTop = 0;
 function save_sidebar_scroll() {
-    saved_scrollTop = $("#user_presence").scrollTop;
+    saved_scrollTop = get_scroll_element($("#buddy_list_wrapper")).scrollTop();
+    console.log({saving: saved_scrollTop});
 }
 
 function load_sidebar_scroll() {
-    $("#user_presence").scrollTop = saved_scrollTop;
-    saved_scrollTop = 0;
+    get_scroll_element($("#buddy_list_wrapper")).scrollTop(saved_scrollTop);
+    buddy_list.update_padding();
+    console.log({loading: saved_scrollTop});
 }
 
 export function redraw() {
-    save_sidebar_scroll();
     build_user_sidebar();
     // todo: figure out how to avoid.
     // this is a hack to make sure nothing breaks if we call redraw
@@ -305,7 +309,6 @@ export function redraw() {
         user_cursor.redraw();
     }
     pm_list.update_private_messages();
-    load_sidebar_scroll();
 }
 
 export function reset_users() {
