@@ -31,6 +31,7 @@ const message_lists = mock_esm("../../static/js/message_lists", {
 const message_scroll = mock_esm("../../static/js/message_scroll");
 const message_view_header = mock_esm("../../static/js/message_view_header");
 const notifications = mock_esm("../../static/js/notifications");
+const pm_list = mock_esm("../../static/js/pm_list");
 const search = mock_esm("../../static/js/search");
 const stream_list = mock_esm("../../static/js/stream_list");
 const top_left_corner = mock_esm("../../static/js/top_left_corner");
@@ -84,6 +85,7 @@ function test_helper() {
     stub(message_scroll, "hide_top_of_narrow_notices");
     stub(notifications, "clear_compose_notifications");
     stub(notifications, "redraw_title");
+    stub(pm_list, "handle_narrow_activated");
     stub(search, "update_button_visibility");
     stub(stream_list, "handle_narrow_activated");
     stub(message_view_header, "initialize");
@@ -200,6 +202,7 @@ run_test("basics", () => {
         [search, "update_button_visibility"],
         [compose_actions, "on_narrow"],
         [top_left_corner, "handle_narrow_activated"],
+        [pm_list, "handle_narrow_activated"],
         [stream_list, "handle_narrow_activated"],
         [typing_events, "render_notifications_for_narrow"],
         [message_view_header, "initialize"],

@@ -1,5 +1,6 @@
 import $ from "jquery";
 
+import * as emoji_ui from "./emoji_ui";
 import * as narrow_state from "./narrow_state";
 import * as people from "./people";
 import * as pm_list_data from "./pm_list_data";
@@ -57,7 +58,21 @@ export function update_private_messages() {
             return $container.find("ul");
         }
 
-        vdom.update(replace_content, find, new_dom, prior_dom);
+        function bind_handlers_on_all_list_items() {
+            const $elems = $container.find(".conversation-partners");
+            for (const elem of $elems) {
+                emoji_ui.bind_handlers_for_status_emoji(elem);
+            }
+        }
+
+        vdom.update(
+            replace_content,
+            find,
+            new_dom,
+            prior_dom,
+            bind_handlers_on_all_list_items,
+            emoji_ui.bind_handlers_for_status_emoji,
+        );
         prior_dom = new_dom;
     }
 }
