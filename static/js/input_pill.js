@@ -6,6 +6,7 @@ import render_input_pill from "../templates/input_pill.hbs";
 
 import * as blueslip from "./blueslip";
 import * as compose from "./compose";
+import * as ui from "./ui";
 import * as ui_util from "./ui_util";
 
 // See https://zulip.readthedocs.io/en/latest/subsystems/input-pills.html
@@ -127,6 +128,10 @@ export function create(opts) {
 
             const pill_html = render_input_pill(opts);
             payload.$element = $(pill_html);
+
+            if (opts.has_status) {
+                ui.bind_handlers_for_status_emoji(payload.$element[0]);
+            }
             store.$input.before(payload.$element);
         },
 
