@@ -131,7 +131,21 @@ export function update_private_messages() {
             return container.find("ul");
         }
 
-        vdom.update(replace_content, find, new_dom, prior_dom);
+        function bind_handlers_on_all_list_items() {
+            const elems = container.find(".conversation-partners");
+            for (const elem of elems) {
+                ui.bind_handlers_for_status_emoji(elem);
+            }
+        }
+
+        vdom.update(
+            replace_content,
+            find,
+            new_dom,
+            prior_dom,
+            bind_handlers_on_all_list_items,
+            ui.bind_handlers_for_status_emoji,
+        );
         prior_dom = new_dom;
     }
 }

@@ -16,7 +16,7 @@ const vdom = mock_esm("../../static/js/vdom", {
 mock_esm("../../static/js/stream_popover", {
     hide_topic_popover() {},
 });
-mock_esm("../../static/js/ui", {
+const ui = mock_esm("../../static/js/ui", {
     get_content_element: (element) => element,
 });
 mock_esm("../../static/js/user_status", {
@@ -262,29 +262,58 @@ test("expand", ({override, override_rewire}) => {
 
 test("update_private_messages", ({override, override_rewire}) => {
     let html_updated;
-    let container_found;
 
     override(narrow_state, "filter", private_filter);
     override(narrow_state, "active", () => true);
     override_rewire(pm_list, "_build_private_messages_list", () => "PM_LIST_CONTENTS");
+    override(ui, "bind_handlers_for_status_emoji", () => {});
 
+    const fake_conv_1 = $.create("fake conv 1");
+    const fake_conv_2 = $.create("fake conv 2");
+    const fake_conv_3 = $.create("fake conv 3");
+
+    let ul_container_found = false;
+    let conversation_partners_found = false;
     $("#private-container").find = (sel) => {
-        assert.equal(sel, "ul");
-        container_found = true;
+        switch (sel) {
+            case "ul":
+                ul_container_found = true;
+                break;
+            case ".conversation-partners":
+                conversation_partners_found = true;
+                return [fake_conv_1, fake_conv_2, fake_conv_3];
+            default:
+                throw new Error("unexpected call to find");
+        }
+        return undefined;
     };
 
-    override(vdom, "update", (replace_content, find) => {
-        html_updated = true;
+    override(
+        vdom,
+        "update",
+        (
+            replace_content,
+            find,
+            new_dom,
+            old_dom,
+            bind_handlers_on_all_list_items,
+            bind_handlers_on_row,
+        ) => {
+            html_updated = true;
 
-        // get line coverage for simple one-liners
-        replace_content();
-        find();
-    });
+            // get line coverage for simple one-liners
+            replace_content();
+            find();
+            bind_handlers_on_all_list_items();
+            bind_handlers_on_row();
+        },
+    );
 
     pm_list.expand();
     pm_list.update_private_messages();
     assert.ok(html_updated);
-    assert.ok(container_found);
+    assert.ok(ul_container_found);
+    assert.ok(conversation_partners_found);
 });
 
 test("ensure coverage", ({override}) => {
