@@ -15,6 +15,7 @@ import * as color_class from "./color_class";
 import * as compose from "./compose";
 import * as compose_fade from "./compose_fade";
 import * as condense from "./condense";
+import * as emoji_ui from "./emoji_ui";
 import * as hash_util from "./hash_util";
 import {$t} from "./i18n";
 import * as message_edit from "./message_edit";
@@ -30,10 +31,12 @@ import * as reactions from "./reactions";
 import * as recent_topics_util from "./recent_topics_util";
 import * as rendered_markdown from "./rendered_markdown";
 import * as rows from "./rows";
+import * as settings_config from "./settings_config";
 import * as stream_data from "./stream_data";
 import * as sub_store from "./sub_store";
 import * as submessage from "./submessage";
 import * as timerender from "./timerender";
+import {user_settings} from "./user_settings";
 import * as user_topics from "./user_topics";
 import * as util from "./util";
 
@@ -678,6 +681,8 @@ export class MessageListView {
         const msg_to_render = {
             ...message_container,
             table_name: this.table_name,
+            emoji_animation_config: user_settings.emoji_animation_config,
+            emoji_animation_config_values: settings_config.emoji_animation_config_values,
         };
         return render_single_message(msg_to_render);
     }
@@ -686,12 +691,16 @@ export class MessageListView {
         const message_groups = opts.message_groups;
         const use_match_properties = opts.use_match_properties;
         const table_name = opts.table_name;
+        const emoji_animation_config = user_settings.emoji_animation_config;
+        const emoji_animation_config_values = settings_config.emoji_animation_config_values;
 
         return $(
             render_message_group({
                 message_groups,
                 use_match_properties,
                 table_name,
+                emoji_animation_config,
+                emoji_animation_config_values,
             }),
         );
     }
@@ -859,6 +868,10 @@ export class MessageListView {
 
             $dom_messages = $rendered_groups.find(".message_row");
             new_dom_elements = new_dom_elements.concat($rendered_groups);
+
+            for (const dom_message of $dom_messages) {
+                emoji_ui.bind_config_based_status_emoji_handlers(dom_message);
+            }
 
             this._post_process($dom_messages);
 
@@ -1224,6 +1237,8 @@ export class MessageListView {
         if (message_content_edited) {
             $rendered_msg.addClass("fade-in-message");
         }
+        // note this is a local function and not the export from ui.js
+        emoji_ui.bind_config_based_status_emoji_handlers($rendered_msg[0]);
         this._post_process($rendered_msg);
         $row.replaceWith($rendered_msg);
 
