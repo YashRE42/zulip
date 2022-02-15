@@ -2,6 +2,7 @@ import {isSameDay} from "date-fns";
 import $ from "jquery";
 import _ from "lodash";
 
+import * as emoji from "../shared/js/emoji";
 import render_bookend from "../templates/bookend.hbs";
 import render_message_group from "../templates/message_group.hbs";
 import render_recipient_row from "../templates/recipient_row.hbs";
@@ -29,10 +30,12 @@ import * as reactions from "./reactions";
 import * as recent_topics_util from "./recent_topics_util";
 import * as rendered_markdown from "./rendered_markdown";
 import * as rows from "./rows";
+import * as settings_config from "./settings_config";
 import * as stream_data from "./stream_data";
 import * as sub_store from "./sub_store";
 import * as submessage from "./submessage";
 import * as timerender from "./timerender";
+import {user_settings} from "./user_settings";
 import * as util from "./util";
 
 function same_day(earlier_msg, later_msg) {
@@ -195,6 +198,31 @@ function populate_group_from_message_container(group, message_container) {
 
     set_topic_edit_properties(group, message_container.msg);
     render_group_display_date(group, message_container);
+}
+
+function bind_handlers_for_status_emoji(elem) {
+    elem.addEventListener("mouseenter", handle_mouseenter_for_status_emoji);
+    elem.addEventListener("mouseleave", handle_mouseleave_for_status_emoji);
+}
+
+function handle_mouseenter_for_status_emoji(event) {
+    if (
+        user_settings.emoji_animation_config ===
+        settings_config.emoji_animation_config_values.on_hover.code
+    ) {
+        const animatable_reaction_emoji = $(event.target).find("img.status_emoji[data-still-url]");
+        emoji.animate(animatable_reaction_emoji);
+    }
+}
+
+function handle_mouseleave_for_status_emoji(event) {
+    if (
+        user_settings.emoji_animation_config ===
+        settings_config.emoji_animation_config_values.on_hover.code
+    ) {
+        const animatable_reaction_emoji = $(event.target).find("img.status_emoji[data-still-url]");
+        emoji.stop_animation(animatable_reaction_emoji);
+    }
 }
 
 export class MessageListView {
@@ -624,6 +652,8 @@ export class MessageListView {
         const msg_to_render = {
             ...message_container,
             table_name: this.table_name,
+            emoji_animation_config: user_settings.emoji_animation_config,
+            emoji_animation_config_values: settings_config.emoji_animation_config_values,
         };
         return render_single_message(msg_to_render);
     }
@@ -638,6 +668,8 @@ export class MessageListView {
                 message_groups,
                 use_match_properties,
                 table_name,
+                emoji_animation_config: user_settings.emoji_animation_config,
+                emoji_animation_config_values: settings_config.emoji_animation_config_values,
             }),
         );
     }
@@ -804,6 +836,11 @@ export class MessageListView {
 
             dom_messages = rendered_groups.find(".message_row");
             new_dom_elements = new_dom_elements.concat(rendered_groups);
+
+            for (const dom_message of dom_messages) {
+                // note this is a local function and not the export from ui.js
+                bind_handlers_for_status_emoji(dom_message);
+            }
 
             this._post_process(dom_messages);
 
@@ -1173,6 +1210,8 @@ export class MessageListView {
         if (message_content_edited) {
             rendered_msg.addClass("fade-in-message");
         }
+        // note this is a local function and not the export from ui.js
+        bind_handlers_for_status_emoji(rendered_msg[0]);
         this._post_process(rendered_msg);
         row.replaceWith(rendered_msg);
 
