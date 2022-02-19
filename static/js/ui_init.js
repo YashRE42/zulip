@@ -123,9 +123,8 @@ function message_unhover(message_row) {
         user_settings.emoji_animation_config ===
             settings_config.emoji_animation_config_values.on_hover.code
     ) {
-        const animatable_reaction_emoji = message_row.find(
-            ".message_reaction img.emoji[data-still-url]",
-        );
+        // finds both in-message emoji and .message_reaction emoji
+        const animatable_reaction_emoji = message_row.find("img.emoji[data-still-url]");
         emoji.stop_animation(animatable_reaction_emoji);
     }
 }
@@ -148,9 +147,8 @@ function message_hover(message_row) {
         user_settings.emoji_animation_config ===
         settings_config.emoji_animation_config_values.on_hover.code
     ) {
-        const animatable_reaction_emoji = message_row.find(
-            ".message_reaction img.emoji[data-still-url]",
-        );
+        // finds both in-message emoji and .message_reaction emoji
+        const animatable_reaction_emoji = message_row.find("img.emoji[data-still-url]");
         emoji.animate(animatable_reaction_emoji);
     }
 

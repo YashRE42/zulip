@@ -6,6 +6,8 @@ import * as emoji from "../shared/js/emoji";
 import {$t} from "./i18n";
 import * as message_list from "./message_list";
 import * as message_lists from "./message_lists";
+import * as settings_config from "./settings_config";
+import {user_settings} from "./user_settings";
 
 // What, if anything, obscures the home tab?
 
@@ -136,6 +138,24 @@ export function bind_handlers_for_status_emoji(elem) {
     if ($(elem).find("img.status_emoji[data-still-url]").length > 0) {
         elem.addEventListener("mouseenter", handle_mouseenter_for_status_emoji);
         elem.addEventListener("mouseleave", handle_mouseleave_for_status_emoji);
+    }
+}
+
+export function reset_emoji_animation(emoji_elt) {
+    if (
+        user_settings.emoji_animation_config !==
+        settings_config.emoji_animation_config_values.always.code
+    ) {
+        emoji.stop_animation($(emoji_elt));
+    } else {
+        emoji.animate($(emoji_elt));
+    }
+}
+
+export function reset_message_feed_emoji_animations() {
+    const $emojis = $(".message_table .message_row img.emoji");
+    for (const emoji_elt of $emojis) {
+        reset_emoji_animation(emoji_elt);
     }
 }
 

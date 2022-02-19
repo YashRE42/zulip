@@ -13,6 +13,7 @@ import * as realm_playground from "./realm_playground";
 import * as rtl from "./rtl";
 import * as stream_data from "./stream_data";
 import * as timerender from "./timerender";
+import * as ui from "./ui";
 import * as user_groups from "./user_groups";
 import {user_settings} from "./user_settings";
 
@@ -244,5 +245,11 @@ export const update_elements = (content) => {
             const text = $(this).attr("title");
             return ":" + text + ":";
         });
+    }
+
+    // call .animate or .stop_animation based on user_settings.emoji_animation_config
+    const $emojis = content.find(".emoji");
+    for (const emoji of $emojis) {
+        ui.reset_emoji_animation(emoji);
     }
 };

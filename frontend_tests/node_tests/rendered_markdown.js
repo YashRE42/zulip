@@ -18,6 +18,7 @@ class Clipboard {
 mock_cjs("clipboard", Clipboard);
 
 const realm_playground = mock_esm("../../static/js/realm_playground");
+const ui = mock_esm("../../static/js/ui");
 user_settings.emojiset = "apple";
 
 const rm = zrequire("rendered_markdown");
@@ -75,6 +76,15 @@ const $array = (array) => {
 };
 
 const get_content_element = () => {
+    const $emoji_array = $array([]);
+    $emoji_array[Symbol.iterator] = function () {
+        return {
+            next() {
+                return {done: true};
+            },
+        };
+    };
+
     const $content = $.create("content-stub");
     $content.set_find_results(".user-mention", $array([]));
     $content.set_find_results(".user-group-mention", $array([]));
@@ -82,7 +92,7 @@ const get_content_element = () => {
     $content.set_find_results("a.stream-topic", $array([]));
     $content.set_find_results("time", $array([]));
     $content.set_find_results("span.timestamp-error", $array([]));
-    $content.set_find_results(".emoji", $array([]));
+    $content.set_find_results(".emoji", $emoji_array);
     $content.set_find_results("div.spoiler-header", $array([]));
     $content.set_find_results("div.codehilite", $array([]));
 
@@ -330,23 +340,55 @@ run_test("timestamp-error", () => {
     assert.equal($timestamp_error.text(), "translated: Invalid time format: the-time-format");
 });
 
-run_test("emoji", () => {
+run_test("emoji", ({override}) => {
     // Setup
     const $content = get_content_element();
     const $emoji = $.create("emoji-stub");
+    $emoji[Symbol.iterator] = function () {
+        return {
+            first: true,
+            next() {
+                if (this.first) {
+                    this.first = false;
+                    return {done: false, value: $emoji};
+                }
+                // else
+                return {done: true};
+            },
+        };
+    };
     $emoji.attr("title", "tada");
-    let called = false;
+    let emoji_plain_text_called = false;
     $emoji.replaceWith = (f) => {
         const text = f.call($emoji);
         assert.equal(":tada:", text);
-        called = true;
+        emoji_plain_text_called = true;
     };
     $content.set_find_results(".emoji", $emoji);
     user_settings.emojiset = "text";
 
-    rm.update_elements($content);
+    let reset_emoji_animation = false;
+    override(ui, "reset_emoji_animation", () => {
+        reset_emoji_animation = true;
+    });
 
-    assert.ok(called);
+    reset_emoji_animation = false;
+    with_field(user_settings, "emoji_animation_config", "always", () => {
+        rm.update_elements($content);
+    });
+    assert.ok(emoji_plain_text_called);
+    assert.ok(reset_emoji_animation);
+
+    with_field(user_settings, "emoji_animation_config", "on_hover", () => {
+        rm.update_elements($content);
+    });
+    assert.ok(reset_emoji_animation);
+
+    reset_emoji_animation = false;
+    with_field(user_settings, "emoji_animation_config", "never", () => {
+        rm.update_elements($content);
+    });
+    assert.ok(reset_emoji_animation);
 
     // Set page parameters back so that test run order is independent
     user_settings.emojiset = "apple";

@@ -66,6 +66,7 @@ import * as stream_topic_history from "./stream_topic_history";
 import * as sub_store from "./sub_store";
 import * as submessage from "./submessage";
 import * as typing_events from "./typing_events";
+import * as ui from "./ui";
 import * as unread_ops from "./unread_ops";
 import * as user_events from "./user_events";
 import * as user_groups from "./user_groups";
@@ -640,7 +641,7 @@ export function dispatch_normal_event(event) {
                 $("body").toggleClass("more_dense_mode");
             }
             if (event.property === "emoji_animation_config") {
-                // reset emoji animations
+                ui.reset_message_feed_emoji_animations();
             }
             if (event.property === "color_scheme") {
                 $("body").fadeOut(300);

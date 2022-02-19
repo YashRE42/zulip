@@ -861,6 +861,7 @@ run_test("user_settings", ({override, override_rewire}) => {
         assert_same(args.setting, event.value);
     }
 
+    override(ui, "reset_message_feed_emoji_animations", noop);
     event = event_fixtures.user_settings__emoji_animation_config;
     user_settings.emoji_animation_config = 1;
     dispatch(event);
