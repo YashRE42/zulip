@@ -73,3 +73,32 @@ run_test("mouseenter/mouseleave handlers", () => {
         mouseleave_result: escaped_fake_still_url,
     });
 });
+
+run_test("reset emoji animation", () => {
+    reset_fake_emoji();
+    fake_emoji.length = 1;
+    fake_emoji.to_$ = () => fake_emoji;
+    $.create(".message_table .message_row img.emoji", {children: [fake_emoji]});
+
+    function test_handlers_with_field({config_code, expected_result}) {
+        reset_fake_emoji();
+        with_overrides(({override}) => {
+            override(user_settings, "emoji_animation_config", config_code);
+            emoji_ui.reset_message_feed_emoji_animations();
+            assert.equal(fake_emoji.attr("src"), expected_result);
+        });
+    }
+
+    test_handlers_with_field({
+        config_code: settings_config.emoji_animation_config_values.always.code,
+        expected_result: escaped_fake_animated_url,
+    });
+    test_handlers_with_field({
+        config_code: settings_config.emoji_animation_config_values.never.code,
+        expected_result: escaped_fake_still_url,
+    });
+    test_handlers_with_field({
+        config_code: settings_config.emoji_animation_config_values.on_hover.code,
+        expected_result: escaped_fake_still_url,
+    });
+});

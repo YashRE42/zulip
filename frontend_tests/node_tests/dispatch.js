@@ -32,6 +32,7 @@ const compose_pm_pill = mock_esm("../../static/js/compose_pm_pill");
 const composebox_typeahead = mock_esm("../../static/js/composebox_typeahead");
 const dark_theme = mock_esm("../../static/js/dark_theme");
 const emoji_picker = mock_esm("../../static/js/emoji_picker");
+const emoji_ui = mock_esm("../../static/js/emoji_ui");
 const hotspots = mock_esm("../../static/js/hotspots");
 const linkifiers = mock_esm("../../static/js/linkifiers");
 const message_edit = mock_esm("../../static/js/message_edit");
@@ -908,6 +909,7 @@ run_test("user_settings", ({override}) => {
         assert_same(args.setting, event.value);
     }
 
+    override(emoji_ui, "reset_message_feed_emoji_animations", noop);
     event = event_fixtures.user_settings__emoji_animation_config;
     user_settings.emoji_animation_config = 1;
     dispatch(event);
