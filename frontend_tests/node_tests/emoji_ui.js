@@ -19,7 +19,7 @@ run_test("animate_and_stop_animation", () => {
     test_emoji.attr("data-still-url", fake_still_url);
     test_emoji.attr("data-animated-url", fake_animated_url);
     const fake_container = $.create("fake container");
-    fake_container.set_find_results("img.status_emoji", test_emoji);
+    fake_container.set_find_results("img.status_emoji[data-still-url]", test_emoji);
     const fake_target = $.create("fake target");
     fake_target.closest = () => fake_container;
     const fake_event = {target: fake_target};
