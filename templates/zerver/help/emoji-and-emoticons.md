@@ -55,21 +55,8 @@ The list of supported emoticons is available
 Copying and pasting emoji from other sites generally works.
 [Contact us](/help/contact-support) if you find a site where it doesn't!
 
-## Change your emoji set
-
-Your emoji set determines how you see emoji. It has no effect on the emoji
-you send. Zulip emoji are compatible with screen readers and other accessibility tools.
-
-{start_tabs}
-
-{settings_tab|display-settings}
-
-1. Under **Theme**, select **Google modern**, **Google classic**,
-   **Twitter** or **Plain text** for the emoji theme.
-
-{end_tabs}
-
 ## Related articles
 
 * [Add custom emoji](/help/custom-emoji)
 * [Emoji reactions](/help/emoji-reactions)
+* [Change how emoji are shown](/help/change-how-emoji-are-shown)

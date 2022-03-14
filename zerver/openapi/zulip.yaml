@@ -8439,7 +8439,7 @@ paths:
         - name: translate_emoticons
           in: query
           description: |
-            Whether to [translate emoticons to emoji](/help/enable-emoticon-translations)
+            Whether to [translate emoticons to emoji](/help/change-how-emoji-are-shown#enable-emoticon-translations)
             in messages the user sends.
           schema:
             type: boolean
@@ -8492,7 +8492,7 @@ paths:
           in: query
           description: |
             Whether emoji animations play continuously, or only on hover, or don't play at all.
-            [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+            [Configure message view emoji animation behavior](/help/change-how-emoji-are-shown#manage-emoji-animation).
 
             - 1 - Never
             - 2 - On hover
@@ -10382,7 +10382,7 @@ paths:
                           translate_emoticons:
                             type: boolean
                             description: |
-                              Whether to [translate emoticons to emoji](/help/enable-emoticon-translations)
+                              Whether to [translate emoticons to emoji](/help/change-how-emoji-are-shown#enable-emoticon-translations)
                               in messages the user sends.
                           display_emoji_reaction_users:
                             type: boolean
@@ -10431,7 +10431,7 @@ paths:
                             type: integer
                             description: |
                               Whether emoji animations play continuously, or only on hover, or don't play at all.
-                              [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+                              [Configure message view emoji animation behavior](/help/change-how-emoji-are-shown#manage-emoji-animation).
 
                               - 1 - Never
                               - 2 - On hover
@@ -12306,7 +12306,7 @@ paths:
                           translate_emoticons:
                             type: boolean
                             description: |
-                              Whether to [translate emoticons to emoji](/help/enable-emoticon-translations)
+                              Whether to [translate emoticons to emoji](/help/change-how-emoji-are-shown#enable-emoticon-translations)
                               in messages the user sends.
                           display_emoji_reaction_users:
                             type: boolean
@@ -12355,7 +12355,7 @@ paths:
                             type: integer
                             description: |
                               Whether emoji animations play continuously, or only on hover, or don't play at all.
-                              [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+                              [Configure message view emoji animation behavior](/help/change-how-emoji-are-shown#manage-emoji-animation).
 
                               - 1 - Never
                               - 2 - On hover
@@ -13273,7 +13273,7 @@ paths:
         - name: translate_emoticons
           in: query
           description: |
-            Whether to [translate emoticons to emoji](/help/enable-emoticon-translations)
+            Whether to [translate emoticons to emoji](/help/change-how-emoji-are-shown#enable-emoticon-translations)
             in messages the user sends.
 
             **Changes**: Before Zulip 5.0 (feature level 80), this setting was managed by
@@ -13354,7 +13354,7 @@ paths:
           in: query
           description: |
             Whether emoji animations play continuously, or only on hover, or don't play at all.
-            [Configure message view emoji animation behavior](/help/configure-message-view-emoji-animation).
+            [Configure message view emoji animation behavior](/help/change-how-emoji-are-shown#manage-emoji-animation).
 
             - 1 - Never
             - 2 - On hover

@@ -43,3 +43,4 @@ added to remove it.
 
 * [Add custom emoji](/help/custom-emoji)
 * [Emoji in messages](/help/emoji-and-emoticons)
+* [Change how emoji are shown](/help/change-how-emoji-are-shown)
