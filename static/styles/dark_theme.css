@@ -324,6 +324,46 @@ body.dark-theme {
         background-color: hsl(0, 86%, 14%) !important;
     }
 
+    #top_navbar {
+        background-color: inherit;
+        border-bottom: 1px solid hsla(0, 0%, 0%, 0.2);
+    }
+
+    #searchbox_legacy .navbar-search:not(.expanded) #search_query {
+        color: hsla(0, 0%, 100%, 0.5);
+    }
+
+    #searchbox_legacy .navbar-search.expanded #search_query::placeholder {
+        color: hsl(0, 0%, 100%);
+    }
+
+    #searchbox #search_query,
+    /* with .expanded for specificity */
+    #searchbox_legacy .navbar-search.expanded #search_query,
+    #searchbox_legacy #search_query {
+        background: hsl(212, 32%, 14%);
+        caret-color: hsl(0, 0%, 100%);
+        color: hsl(0, 0%, 100%);
+    }
+
+    #searchbox_legacy .navbar-search .search_icon {
+        color: hsla(0, 0%, 100%, 0.5);
+    }
+
+    #searchbox_legacy .navbar-search .search_button {
+        color: hsla(0, 0%, 100%);
+    }
+
+    .typeahead.dropdown-menu.search_typeahead,
+    .dropdown-menu.search_typeahead {
+        /* color: hsl(0, 0%, 100%); */
+        background: hsl(212, 32%, 14%);
+        .active > a {
+            background-color: hsl(200, 100%, 38%);
+            color: inherit;
+        }
+    }
+
     #search_arrows .pill,
     .pm_recipient .pill-container .pill {
         color: inherit;

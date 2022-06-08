@@ -312,6 +312,7 @@ p.n-margin {
 }
 
 #top_navbar {
+    background-color: hsl(0, 0%, 96%)           ;
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.2);
 }
 
@@ -1697,17 +1698,6 @@ div.focused_table {
     white-space: nowrap;
 }
 
-.search_icon {
-    /* These rules match the .dropdown-toggle CSS for the gear menu. */
-    color: inherit;
-    opacity: 0.5;
-    text-decoration: none;
-
-    &:hover {
-        opacity: 1;
-    }
-}
-
 #message_view_header {
     z-index: 2;
     float: left;
@@ -1852,8 +1842,6 @@ div.focused_table {
     .search_closed {
         overflow: visible;
         flex: 0; /* makes sure search icon is always visible */
-
-        cursor: pointer;
         font-size: 20px;
         padding-right: 15px;
     }
@@ -1865,12 +1853,6 @@ div.focused_table {
     .navbar-click-opens-search {
         flex-grow: 1;
 
-        /* Provide the visual cue that clicking this will work as expected. */
-        cursor: pointer;
-
-        &:hover ~ .search_closed {
-            opacity: 1;
-        }
     }
 }
 
@@ -1879,25 +1861,78 @@ div.focused_table {
     width: 100%;
     height: $header_height;
 
+    .navbar-search {
+        margin-top: 0;
+        position: absolute;
+        color: hsla(0, 0%, 0%, 0.5);
+        .search_icon {
+            text-decoration: none;
+            color: hsla(0, 0%, 0%, 0.5);
+        }
+    }
+
     .navbar-search:not(.expanded) {
-        display: none;
+        right: 0;
+
+        .search_button {
+            display: none;
+        }
+
+        #search_query {
+            border-radius: 5px;
+            color: hsl(0, 0%, 20%);
+            &:hover {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15),
+                    0 1px 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        #search_arrows {
+            width: 150px;
+        }
     }
 
     .navbar-search.expanded {
         overflow: hidden;
-        margin-top: 0;
-        width: calc(100% - 2px);
-        position: absolute;
+        color: hsla(0, 0%, 0%, 1);
+        width: 100%;
 
         .search_button {
             display: inline;
-            margin-right: 15px;
+        }
+
+        &:hover,
+        &:focus-within {
+            box-shadow: 0 10px 20px hsla(0, 0%, 0%, 0.25),
+                0 7px 5px hsla(0, 0%, 0%, 0.1);
+        }
+
+        &:hover #search_query {
+            box-shadow: 0 4px 20px hsla(0, 0%, 0%, 0.25),
+                0 1px 5px hsla(0, 0%, 0%, 0.1);
+        }
+
+        #search_query {
+            background: hsl(0, 0%, 100%);
+            border-radius: 5px 5px 0 0;
+            color: hsla(0, 0%, 0%, 1);
+            &::placeholder {
+                color: hsl(0, 0%, 0%);
+            }
+            &:hover,
+            &:focus {
+                box-shadow: 0 4px 20px hsla(0, 0%, 0%, 0.25),
+                    0 1px 5px hsla(0, 0%, 0%, 0.1);
+            }
+            &:not(:focus) {
+                /* background: hsl(0, 0%, 96%); */
+                border-radius: 5px;
+            }
         }
     }
 
     .input-append {
         position: relative;
-        width: 100%;
         width: max-content;
         min-width: 100%;
 
@@ -1916,23 +1951,27 @@ div.focused_table {
     }
 
     #search_query {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         width: 100%;
         font-size: 16px;
-        height: $header_height;
         padding: 0;
         padding-left: 5px;
         padding-right: 20px;
-        border-radius: 0;
+        border: none;
         font-family: "Source Sans 3", sans-serif;
-        font-weight: 300;
-        line-height: $header_height;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
+        font-weight: 400;
+        line-height: 1;
+        margin-top: 6px;
+        height: calc($header_height - 2 * 6.5px);
+        background: hsl(0, 0%, 100%);
 
-    #search_arrows:focus {
-        box-shadow: inset 0 0 0 2px hsl(204, 20%, 74%);
+        .search_text {
+            text-align: center;
+            vertical-align: middle;
+            line-height: $header_height;
+        }
     }
 
     .search_button,
@@ -1951,6 +1990,7 @@ div.focused_table {
         box-shadow: none;
         text-shadow: none;
         z-index: 5;
+        outline: none;
     }
 
     .search_button:hover {
@@ -2012,14 +2052,25 @@ div.focused_table {
     }
 
     .search_button {
-        right: 0;
+        right: 10px;
     }
+}
 
-    .navbar-search.expanded {
-        .search_button {
-            margin-right: 14px;
-        }
+.dropdown-menu.search_typeahead {
+    margin-top: 0;
+    padding-top: 0;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 4px 20px hsla(0, 0%, 0%, 0.25), 0 1px 5px hsla(0, 0%, 0%, 0.1);
+    /* Clip only the top of the box-shadow off, so it doesn't overlap with
+    #search_query */
+    clip: rect(0, 2000px, 2000px, -2000px);
+
+    .active > a {
+        background-color: hsl(0, 0%, 94%);
+        background-image: none;
+        color: hsl(0, 0%, 20%);
     }
+    border-width: 0;
 }
 
 #message_view_header_underpadding {
@@ -2839,10 +2890,14 @@ select.inline_select_topic_edit {
         margin-right: 7px;
     }
 
+    #searchbox_legacy .navbar-search:not(.expanded) {
+        margin-right: 75px;
+    }
+
     .top-navbar-container,
     #searchbox_legacy .navbar-search.expanded,
     #searchbox .navbar-search.expanded {
-        width: calc(100% - 84px);
+        width: calc(100% - 80px);
     }
 
     .search_closed .zulip-icon-search {
@@ -2933,9 +2988,14 @@ select.inline_select_topic_edit {
         display: block;
     }
 
+    .top-navbar-container {
+        margin-left: 40px;
+    }
+
     #searchbox_legacy .navbar-search.expanded,
     #searchbox .navbar-search.expanded {
-        width: calc(100% - 123px);
+        margin-left: 5px;
+        width: calc(100% - 120px);
     }
 
     .search_closed .zulip-icon-search {
@@ -2943,7 +3003,6 @@ select.inline_select_topic_edit {
     }
 
     #top_navbar:not(.rightside-userlist) {
-
         #searchbox_legacy .navbar-search.expanded,
         #searchbox .navbar-search.expanded {
             width: calc(100% - 90px);
@@ -2986,8 +3045,12 @@ select.inline_select_topic_edit {
         line-height: 30px;
     }
 
-    #search_query {
-        height: 30px !important;
+    #searchbox_legacy .navbar-search:not(.expanded) #search_query {
+        width: 130px;
+    }
+
+    #searchbox_legacy #search_query {
+        height: 20px;
         vertical-align: text-bottom;
     }
 
@@ -3004,6 +3067,11 @@ select.inline_select_topic_edit {
 
     #searchbox,
     #searchbox_legacy {
+        .input-block-level {
+            height: 20px;
+            min-height: 20px;
+        }
+
         .search_icon {
             top: 1px;
         }
@@ -3015,6 +3083,7 @@ select.inline_select_topic_edit {
 
         .search_button,
         .search_button:disabled:hover {
+            font-size: 16px;
             top: 0;
         }
     }
