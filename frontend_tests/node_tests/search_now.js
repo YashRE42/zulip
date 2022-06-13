@@ -175,8 +175,16 @@ run_test("initialize", () => {
         }
     };
 
+    let typeahead_css_args;
+    narrow_state.filter = () => ({
+        is_common_narrow: () => "potate",
+    });
+    $(".dropdown-menu ul").css = (args) => {
+        typeahead_css_args = args;
+    };
     search.initialize();
 
+    assert.equal(typeahead_css_args, "width");
     $search_button.prop("disabled", true);
     $search_query_box.trigger("focus");
     assert.ok(!$search_button.prop("disabled"));
@@ -184,7 +192,7 @@ run_test("initialize", () => {
     $search_query_box.val("test string");
     narrow_state.search_string = () => "ver";
     $search_query_box.trigger("blur");
-    assert.equal($search_query_box.val(), "test string");
+    assert.equal($search_query_box.val(), "");
 
     search.__Rewire__("is_using_input_method", false);
     $searchbox_form.trigger("compositionend");
@@ -286,36 +294,31 @@ run_test("initiate_search", () => {
     // this implicitly expects the code to used the chained
     // function calls, which is something to keep in mind if
     // this test ever fails unexpectedly.
-    narrow_state.filter = () => ({is_search: () => true});
-    let typeahead_forced_open = false;
-    let is_searchbox_text_selected = false;
-    $("#search_query").typeahead = (lookup) => {
-        if (lookup === "lookup") {
-            typeahead_forced_open = true;
-        }
-        return $("#search_query");
-    };
-    $("#search_query").on("select", () => {
-        is_searchbox_text_selected = true;
+    narrow_state.filter = () => ({
+        is_common_narrow: () => true,
+        is_search: () => true,
     });
+    $("#search_query").typeahead = () => $("#search_query");
+    search.initialize();
+    assert.equal($("#search_query").val(), "");
 
-    let searchbox_css_args;
-
-    $("#searchbox").css = (args) => {
-        searchbox_css_args = args;
+    $("#message_view_header").width = () => 5;
+    let typeahead_css_args;
+    $(".dropdown-menu ul").css = (args) => {
+        typeahead_css_args = args;
     };
-
-    search.initiate_search();
-    assert.ok(typeahead_forced_open);
-    assert.ok(is_searchbox_text_selected);
-    assert.equal($("#search_query").val(), "ver");
-
-    assert.deepEqual(searchbox_css_args, {
-        "box-shadow": "inset 0px 0px 0px 2px hsl(204, 20%, 74%)",
+    let added_class;
+    $(".dropdown-menu ul").parent = () => ({
+        addClass: (class_to_add) => {
+            added_class = class_to_add;
+        },
     });
 
     // test that we append space for user convenience
     narrow_state.filter = () => ({is_search: () => false});
     search.initiate_search();
+
+    assert.equal(added_class, "search_typeahead");
+    assert.equal(typeahead_css_args, "width");
     assert.equal($("#search_query").val(), "ver ");
 });

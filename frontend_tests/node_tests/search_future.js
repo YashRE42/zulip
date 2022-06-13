@@ -225,7 +225,15 @@ test("initialize", () => {
     $searchbox.css = (args) => {
         css_args = args;
     };
+    let typeahead_css_args;
+    narrow_state.filter = () => ({
+        is_common_narrow: () => "potate",
+    });
+    $(".dropdown-menu ul").css = (args) => {
+        typeahead_css_args = args;
+    };
     $searchbox.trigger("focusout");
+    assert.equal(typeahead_css_args, "width");
     assert.deepEqual(css_args, {"box-shadow": "unset"});
 
     search.__Rewire__("is_using_input_method", false);
@@ -333,34 +341,6 @@ test("initiate_search", () => {
     // this implicitly expects the code to used the chained
     // function calls, which is something to keep in mind if
     // this test ever fails unexpectedly.
-    let typeahead_forced_open = false;
-    let is_searchbox_text_selected = false;
-    let is_searchbox_focused = false;
-    $("#search_query").off("focus");
-    $("#search_query").on("focus", () => {
-        is_searchbox_focused = true;
-    });
-    $("#search_query").typeahead = (lookup) => {
-        if (lookup === "lookup") {
-            typeahead_forced_open = true;
-        }
-        return $("#search_query");
-    };
-    $("#search_query").on("select", () => {
-        is_searchbox_text_selected = true;
-    });
-
-    $("#search_query")[0] = "stub";
-
-    const $searchbox = $("#searchbox");
-    let css_args;
-    $searchbox.css = (args) => {
-        css_args = args;
-    };
-
-    search.initiate_search();
-    assert.ok(typeahead_forced_open);
-    assert.ok(is_searchbox_text_selected);
-    assert.ok(is_searchbox_focused);
-    assert.deepEqual(css_args, {"box-shadow": "inset 0px 0px 0px 2px hsl(204, 20%, 74%)"});
+    $("#search_query").typeahead = () => $("#search_query");
+    search.initialize();
 });

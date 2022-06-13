@@ -104,6 +104,7 @@ export function initialize() {
                 search_pill.append_search_string(search_string, search_pill_widget.widget);
                 return $search_query_box.val();
             }
+            message_view_header.reset_typeahead_width();
             return narrow_or_search_for_term(search_string);
         },
         sorter(items) {
@@ -160,6 +161,15 @@ export function initialize() {
                 $search_query_box.trigger("blur");
                 update_buttons_with_focus(false);
             }
+
+            if (e.key === "Backspace" && $search_query_box.val() === "") {
+                // We just pressed Backspace and the box was empty. This
+                // dismisses the typeahead, which leaves us in a broken / ugly
+                // UI state due to the box shadow on the search query box. To
+                // prevent this, we trigger a lookup to bring the typeahead
+                // back.
+                $("#search_query").typeahead("lookup").trigger("select");
+            }
         });
 
     // Some of these functions don't actually need to be exported,
@@ -195,6 +205,25 @@ export function initialize() {
                 return;
             }
         }
+
+        // This part of the blur event is a bit of a pain. The intent is that if
+        // the user clicks out of the searchbox in a non-searching narrow, the
+        // searchbox will close and show the narrow description. The part that
+        // is annoying is that this can break the typeahead by interfering with
+        // the selection via mouse click, ie selecting an item from the
+        // typeahead will be buggy. To prevent this bug, we check that the
+        // **element that received focus'** parent isn't the typeahead.
+        if (
+            e.relatedTarget === null ||
+            e.relatedTarget === undefined ||
+            $(e.relatedTarget).parents(".search_typeahead").length !== 1
+        ) {
+            const filter = narrow_state.filter();
+            if (!filter || filter.is_common_narrow()) {
+                message_view_header.close_search_bar_and_open_narrow_description();
+            }
+        }
+
         setTimeout(() => {
             update_button_visibility();
         }, 100);
@@ -209,6 +238,25 @@ export function initialize() {
             $searchbox.css({"box-shadow": "unset"});
         });
     }
+
+    const $search_query = $("#search_query");
+    $search_query.on("click", (e) => {
+        if ($("#searchbox_form.navbar-search.expanded").find("#search_query").length !== 1) {
+            // Would it be better to just store "whether state is expanded" in a variable?
+            // Reading off of DOM like this can cause lag.
+            initiate_search();
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            const $setter = $("#message_view_header");
+            const $typeahead = $(".dropdown-menu ul");
+            $typeahead.css("width", $setter.width() + "px");
+            // this is wrong, it applies to all typeaheads and not just the one for
+            // search, thus we need to always make sure we're removing this as
+            // appropriate.
+            $typeahead.parent().addClass("search_typeahead");
+        }
+    });
 }
 
 export function focus_search() {
@@ -218,7 +266,13 @@ export function focus_search() {
 
 export function initiate_search() {
     message_view_header.open_search_bar_and_close_narrow_description();
-    $("#searchbox").css({"box-shadow": "inset 0px 0px 0px 2px hsl(204, 20%, 74%)"});
+    const $setter = $("#message_view_header");
+    const $typeahead = $(".dropdown-menu ul");
+    $typeahead.css("width", $setter.width() + "px");
+    // this is wrong, it applies to all typeaheads and not just the one for
+    // search, thus we need to always make sure we're removing this as
+    // appropriate.
+    $typeahead.parent().addClass("search_typeahead");
     $("#search_query").typeahead("lookup").trigger("select");
     if (page_params.search_pills_enabled) {
         $("#search_query").trigger("focus");
